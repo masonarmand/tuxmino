@@ -28,7 +28,7 @@ The game does not completely replicate the exact mechanics of the [Tetris Grand 
 
 ## Screenshots
 <img src="https://github.com/Scarbyte/tuxmino/blob/main/screenshots/screenshot.png?raw=true" width=600>
-<img src="https://github.com/Scarbyte/tuxmino/blob/main/screenshots/2022-09-20%2017:10:23.png?raw=true" width=600>
+<img src="https://github.com/Scarbyte/tuxmino/blob/main/screenshots/menu.png?raw=true" width=600>
 
 ## Compiling on Linux
 ### Required dependecies
