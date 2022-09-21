@@ -11,6 +11,7 @@
 # to force cmake to use MinGW's gcc instead of whatever default shit it uses.
 # If you get an error about not being able to find/open raylib.lib, this is probably why.
 #
+# Also, you will need to copy the res/folder to the same directory as the executable.
 
 cmake_minimum_required(VERSION 3.10)
 
