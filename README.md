@@ -30,6 +30,18 @@ The game does not completely replicate the exact mechanics of the [Tetris Grand 
 <img src="https://github.com/Scarbyte/tuxmino/blob/main/screenshots/screenshot.png?raw=true" width=600>
 <img src="https://github.com/Scarbyte/tuxmino/blob/main/screenshots/menu.png?raw=true" width=600>
 
+<br>
+
+## Compiling on Windows using CMake
+`mkdir build`  
+`cd build`  
+`cmake .. -G "MinGW Makefiles"`  
+`cmake --build .`  
+
+After compiling make sure your compiled executable is in the same folder as the res folder.
+
+<br>
+
 ## Compiling on Linux
 ### Required dependecies
 - [raylib](https://github.com/raysan5/raylib)
@@ -43,7 +55,7 @@ To compile statically make sure to link to the respective static libraries.
 Example (assuming raylib is in the same directory as the project):  
 ```gcc ./src/*c -I./raylib//include `pkg-config --cflags glfw3` -o tuxmino -L./raylib/lib -lraylib `pkg-config --static --libs glfw3` -lm -pthread```
 
-
+<br>
 
 ## Credits
 - Background images from NASA
