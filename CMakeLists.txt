@@ -17,7 +17,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Set the project name and version
-project(TUXMINO VERSION 1.0)
+project(TUXMINO VERSION 0.1)
 
 # Specify C standard
 set(CMAKE_C_STANDARD 99)
