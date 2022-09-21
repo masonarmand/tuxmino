@@ -38,6 +38,8 @@ The game does not completely replicate the exact mechanics of the [Tetris Grand 
 `cmake .. -G "MinGW Makefiles"`  
 `cmake --build .`  
 
+After compiling make sure your compiled executable is in the same folder as the res folder.
+
 <br>
 
 ## Compiling on Linux
