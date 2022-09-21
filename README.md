@@ -38,11 +38,23 @@ The game does not completely replicate the exact mechanics of the [Tetris Grand 
 `cmake .. -G "MinGW Makefiles"`  
 `cmake --build .`  
 
-After compiling make sure your compiled executable is in the same folder as the res folder.
+After compiling make sure your compiled executable is in the same folder as the `res` folder.
 
 <br>
 
-## Compiling on Linux
+## Compiling on Linux using CMake
+`git clone https://github.com/Scarbyte/tuxmino.git`  
+`cd tuxmino`  
+`mkdir build`  
+`cd build`  
+`cmake ..`  
+`cmake --build .`  
+
+Then make sure your compiled binary is in the same folder as the `res` folder.  
+
+<br>
+
+## Compiling on Linux Manually
 ### Required dependecies
 - [raylib](https://github.com/raysan5/raylib)
 - [glfw](https://github.com/glfw/glfw)
