@@ -41,24 +41,20 @@ target_link_directories(tuxmino PUBLIC
     lib/
 )
 
+# Compile raylib if needed. Basically, just call the CMakeLists.txt file that raylib comes with, but output the files one directory higher (in tuxmino/dependencies/raylib/). Pretty sure CMake actually moves everything to tuxmino/build/ which is even cleaner. CMake also seems to handle target_link_libraries(raylib) directly.
+add_subdirectory(./dependencies/raylib/raylib-4.2.0/ ./dependencies/raylib)
 target_link_libraries(tuxmino PRIVATE
     raylib
 )
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    find_package(glfw)
-    find_package(m)
     target_link_libraries(tuxmino PRIVATE
-        raylib
         glfw
         m
+        pthread
     )
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    # find_package(opengl32)
-    # find_package(gdi32)
-    # find_package(lwinmm)
     target_link_libraries(tuxmino PRIVATE
-        raylib
         opengl32
         gdi32
         winmm
