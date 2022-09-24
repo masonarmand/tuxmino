@@ -36,6 +36,7 @@ void processInput(Piece* activePiece, Block** playField, float delayedAutoShift,
 void moveDown(Piece* activePiece, Block** playField, float tickSpeed, float lineClearSpeed, float lockDelay, float appearanceDelay, bool gravity20G);
 
 bool processMenuInput(int* gameType);
+bool processPauseMenuInput(int* idxOption);
 
 bool canDrawPiece();
 
