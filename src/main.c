@@ -146,10 +146,6 @@ void update(void) {
         pause = !pause;
     }
 
-    if (IsKeyPressed(KEY_R)) {
-        resetGame();
-    }
-
     if (IsKeyPressed(KEY_S)) {
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
@@ -177,6 +173,8 @@ void update(void) {
             if (idxPauseOption == 0) {
                 pause = false;
             } else if (idxPauseOption == 1) {
+                resetGame();
+            } else if (idxPauseOption == 2) {
                 shouldQuit = true;
             }
         }
@@ -374,6 +372,7 @@ void declareGameOver() {
 void resetGame() {
     heldPiece = -1;
     inMenu = true;
+    pause = false;
     gameOver = false;
     maxLevel = 0;
     currentLevel = 0;

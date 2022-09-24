@@ -634,14 +634,14 @@ bool processPauseMenuInput(int* idxOption) {
 
     if (IsKeyPressed(KEY_UP)) {
         if (*idxOption <= 0) {
-            *idxOption = 1;
+            *idxOption = 2;
         } else {
             *idxOption -= 1;
         }
     }
 
     if (IsKeyPressed(KEY_DOWN)) {
-        if (*idxOption >= 1) {
+        if (*idxOption >= 2) {
             *idxOption = 0;
         } else {
             *idxOption += 1;
