@@ -16,6 +16,7 @@ extern Sound cheerSound;
 extern Sound lineClearSound;
 extern Sound moveSound;
 extern Sound preRotateSound;
+extern Sound selectSound;
 
 #endif
 
