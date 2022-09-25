@@ -49,7 +49,6 @@ Sound preRotateSound;
 
 Piece activePiece;
 
-int framesCounter; // used for pause blinking animation
 int gameType = 0;
 int currentLevel = 0;
 int maxLevel = 0;
@@ -171,8 +170,6 @@ void update(void) {
         invisiblePieces = false;
     }
     else if (pause) {
-        framesCounter++;
-
         bool isSelected = processPauseMenuInput(&idxPauseOption);
         if (isSelected) {
             if (idxPauseOption == 0) {
@@ -208,11 +205,7 @@ void render(void) {
         }
 
         if (pause) {
-            if ((framesCounter/30)%2) {
-                DrawText("Paused", playFieldPos.x + (matrixWidth * cellSize) + 300, playFieldPos.y + ((matrixHeight * 32)/2), 40, WHITE);
-            }
-
-            drawPauseMenu(idxPauseOption, playFieldPos);
+            drawPauseMenu(idxPauseOption, playFieldPos, cellSize);
         }
         
         drawBorder(playFieldPos, frameTileset, cellSize, frameColor);

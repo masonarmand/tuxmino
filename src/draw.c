@@ -239,7 +239,7 @@ void drawMenu(int gameType, Vector2 playFieldPos) {
     DrawText("20G practice", playFieldPos.x, 280 + playFieldPos.y, 40, color20g);
 }
 
-void drawPauseMenu(int idxOption, Vector2 playFieldPos) {
+void drawPauseMenu(int idxOption, Vector2 playFieldPos, int cellSize) {
     Color resumeColor = WHITE;
     Color mainMenuColor = WHITE;
     Color quitColor = WHITE;
@@ -255,6 +255,11 @@ void drawPauseMenu(int idxOption, Vector2 playFieldPos) {
             quitColor = RED;
             break;
     }
+    
+    DrawRectangle(playFieldPos.x, playFieldPos.y + (2 * cellSize), matrixWidth * cellSize, (matrixHeight -2) * cellSize, (Color){0,0,0,220});
+    DrawText("Paused", playFieldPos.x, 70 + playFieldPos.y, 50, WHITE);
+    // draw line under paused text
+    DrawLineEx((Vector2){playFieldPos.x, 118 + playFieldPos.y}, (Vector2){playFieldPos.x + (matrixWidth * cellSize), 118 + playFieldPos.y}, 1.5f, WHITE);
 
     DrawText("Resume", playFieldPos.x, 120 + playFieldPos.y, 40, resumeColor);
     DrawText("Main Menu", playFieldPos.x, 160 + playFieldPos.y, 40, mainMenuColor);
