@@ -184,55 +184,28 @@ void drawStackOutline(Block** playField, Vector2 playFieldPos, int cellSize, boo
 }
 
 void drawMenu(int gameType, Vector2 playFieldPos) {
-    Color masterColor;
-    Color deathColor;
-    Color easyColor;
-    Color invisColor;
-    Color color20g;
+    Color masterColor = WHITE;
+    Color deathColor = WHITE;
+    Color easyColor = WHITE;
+    Color invisColor = WHITE;
+    Color color20g = WHITE;
 
     switch (gameType) {
         case 0:
             masterColor = BLUE;
-            deathColor = WHITE;
-            easyColor = WHITE;
-            invisColor = WHITE;
-            color20g = WHITE;
             break;
         case 1:
-            masterColor = WHITE;
             deathColor = RED;
-            easyColor = WHITE;
-            invisColor = WHITE;
-            color20g = WHITE;
             break;
         case 2:
-            masterColor = WHITE;
-            deathColor = WHITE;
             easyColor = GREEN;
-            invisColor = WHITE;
-            color20g = WHITE;
             break;
         case 3:
-            masterColor = WHITE;
-            deathColor = WHITE;
-            easyColor = WHITE;
             invisColor = YELLOW;
-            color20g = WHITE;
             break;
         case 4:
-            masterColor = WHITE;
-            deathColor = WHITE;
-            easyColor = WHITE;
-            invisColor = WHITE;
             color20g = PURPLE;
             break;
-        default:
-            masterColor = WHITE;
-            deathColor = WHITE;
-            easyColor = WHITE;
-            invisColor = WHITE;
-            color20g = WHITE;
-
     }
 
     DrawText("Tuxmino Master", playFieldPos.x, 120 + playFieldPos.y, 40, masterColor);
@@ -243,24 +216,18 @@ void drawMenu(int gameType, Vector2 playFieldPos) {
 }
 
 void drawPauseMenu(int idxOption, Vector2 playFieldPos) {
-    Color resumeColor;
-    Color mainMenuColor;
-    Color quitColor;
+    Color resumeColor = WHITE;
+    Color mainMenuColor = WHITE;
+    Color quitColor = WHITE;
 
     switch (idxOption) {
         case 0:
             resumeColor = GREEN;
-            mainMenuColor = WHITE;
-            quitColor = WHITE;
             break;
         case 1:
-            resumeColor = WHITE;
             mainMenuColor = YELLOW;
-            quitColor = WHITE;
             break;
         case 2:
-            resumeColor = WHITE;
-            mainMenuColor = WHITE;
             quitColor = RED;
             break;
     }
