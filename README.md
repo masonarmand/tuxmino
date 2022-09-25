@@ -16,8 +16,8 @@ The game does not completely replicate the exact mechanics of the [Tetris Grand 
 - `Space` = hold
 - `Z` = rotates left
 - `X` = rotatates right
-- `Escape` = pause
-- `R` = restart/back to main menu
+- `Escape` = pause menu
+- `R` = restart current game mode
 - `S` = take a screenshot (saved in screenshot folder)
 
 ## Todo
