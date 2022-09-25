@@ -6,15 +6,15 @@
 #include <stdio.h> // required for srand
 
 
-static const int screenWidth = 1024;
-static const int screenHeight = 704;
+static const int screenWidth = 1224;
+static const int screenHeight = 820;
 
 const int cellSize = 32;
 
 const int matrixHeight = 22;
 const int matrixWidth = 10;
 Block** playField; // 2d array for playing area
-Vector2 playFieldPos = {160, -32};
+Vector2 playFieldPos = {(screenHeight/2) + matrixWidth, 84};
 
 Texture2D blockTileset;
 Texture2D frameTileset;
@@ -87,7 +87,7 @@ double framesToMilliseconds(int frames); // Convert frames to miliseconds
 
 int main(void) {
     InitWindow(screenWidth, screenHeight, "tuxmino v0.1");
-    SetTargetFPS(60); // lock game to 60 frames per second
+    //SetTargetFPS(60); // lock game to 60 frames per second
     SetExitKey(KEY_NULL);
     InitAudioDevice();
 
@@ -184,11 +184,10 @@ void update(void) {
 void render(void) {
     BeginDrawing();
         ClearBackground(BLACK);
-        DrawTexture(background, 0, 0, WHITE);
-        
+        DrawTexturePro(background, (Rectangle){0,0, background.width, background.height}, (Rectangle){0,0, screenWidth, screenHeight}, (Vector2){0,0}, 0, WHITE); 
         drawPlayField(playField, playFieldPos, cellSize, invisiblePieces); 
         drawPiecePreview(activePiece, playFieldPos, cellSize);
-        drawheldPiece(activePiece, cellSize);
+        drawHeldPiece(activePiece, playFieldPos, cellSize);
         drawStackOutline(playField, playFieldPos, cellSize, invisiblePieces);
 
         if (!gameOver && !inMenu) {
