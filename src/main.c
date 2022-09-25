@@ -53,12 +53,14 @@ int gameType = 0;
 int currentLevel = 0;
 int maxLevel = 0;
 char debugText[20];
+int idxPauseOption = 0;
 
 bool gravity20G = false;
 bool gameOver = false;
 bool invisiblePieces = false;
 bool inMenu = true;
 bool pause = false;
+bool shouldQuit = false;
 
 float delayedAutoShift = 0.13f; // When you hold down a key this is the amount of time it takes for key repeat to activate
 float autoRepeatRate = 20.0f; // The time between automatic keypresses while holding down a key
@@ -90,10 +92,9 @@ int main(void) {
     InitAudioDevice();
 
     start();
-    bool exitWindow = false;
 
     // main game loop
-    while (!WindowShouldClose()) {
+    while (!WindowShouldClose() && !shouldQuit) {
         update();
         render();
     }
@@ -145,10 +146,6 @@ void update(void) {
         pause = !pause;
     }
 
-    if (IsKeyPressed(KEY_R)) {
-        resetGame();
-    }
-
     if (IsKeyPressed(KEY_S)) {
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
@@ -168,7 +165,20 @@ void update(void) {
     else if (gameOver) {
         invisiblePieces = false;
     }
-    else if (pause) framesCounter++;
+    else if (pause) {
+        framesCounter++;
+
+        bool isSelected = processPauseMenuInput(&idxPauseOption);
+        if (isSelected) {
+            if (idxPauseOption == 0) {
+                pause = false;
+            } else if (idxPauseOption == 1) {
+                resetGame();
+            } else if (idxPauseOption == 2) {
+                shouldQuit = true;
+            }
+        }
+    }
 }
 
 void render(void) {
@@ -193,8 +203,12 @@ void render(void) {
             DrawText("GAME OVER", playFieldPos.x, 200, 52, WHITE);
         }
 
-        if (pause && ((framesCounter/30)%2)) {
-            DrawText("Paused", playFieldPos.x + (matrixWidth * cellSize) + 300, playFieldPos.y + ((matrixHeight * 32)/2), 40, WHITE);
+        if (pause) {
+            if ((framesCounter/30)%2) {
+                DrawText("Paused", playFieldPos.x + (matrixWidth * cellSize) + 300, playFieldPos.y + ((matrixHeight * 32)/2), 40, WHITE);
+            }
+
+            drawPauseMenu(idxPauseOption, playFieldPos);
         }
         
         drawBorder(playFieldPos, frameTileset, cellSize, frameColor);
@@ -358,6 +372,7 @@ void declareGameOver() {
 void resetGame() {
     heldPiece = -1;
     inMenu = true;
+    pause = false;
     gameOver = false;
     maxLevel = 0;
     currentLevel = 0;

@@ -628,3 +628,29 @@ bool processMenuInput(int* gameType) {
 
     return gameEntered;
 }
+
+bool processPauseMenuInput(int* idxOption) {
+    bool isSelected = false;
+
+    if (IsKeyPressed(KEY_UP)) {
+        if (*idxOption <= 0) {
+            *idxOption = 2;
+        } else {
+            *idxOption -= 1;
+        }
+    }
+
+    if (IsKeyPressed(KEY_DOWN)) {
+        if (*idxOption >= 2) {
+            *idxOption = 0;
+        } else {
+            *idxOption += 1;
+        }
+    }
+
+    if (IsKeyPressed(KEY_ENTER)) {
+        isSelected = true;
+    }
+
+    return isSelected;
+}

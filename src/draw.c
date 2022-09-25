@@ -241,3 +241,31 @@ void drawMenu(int gameType, Vector2 playFieldPos) {
     DrawText("Invisible", playFieldPos.x, 240 + playFieldPos.y, 40, invisColor);
     DrawText("20G practice", playFieldPos.x, 280 + playFieldPos.y, 40, color20g);
 }
+
+void drawPauseMenu(int idxOption, Vector2 playFieldPos) {
+    Color resumeColor;
+    Color mainMenuColor;
+    Color quitColor;
+
+    switch (idxOption) {
+        case 0:
+            resumeColor = GREEN;
+            mainMenuColor = WHITE;
+            quitColor = WHITE;
+            break;
+        case 1:
+            resumeColor = WHITE;
+            mainMenuColor = YELLOW;
+            quitColor = WHITE;
+            break;
+        case 2:
+            resumeColor = WHITE;
+            mainMenuColor = WHITE;
+            quitColor = RED;
+            break;
+    }
+
+    DrawText("Resume", playFieldPos.x, 120 + playFieldPos.y, 40, resumeColor);
+    DrawText("Main Menu", playFieldPos.x, 160 + playFieldPos.y, 40, mainMenuColor);
+    DrawText("Quit", playFieldPos.x, 200 + playFieldPos.y, 40, quitColor);
+}
