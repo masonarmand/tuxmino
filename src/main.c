@@ -46,14 +46,18 @@ Sound cheerSound;
 Sound lineClearSound;
 Sound moveSound;
 Sound preRotateSound;
+Sound selectSound;
 
 Piece activePiece;
+
+Timer delayStartTimer;
 
 int gameType = 0;
 int currentLevel = 0;
 int maxLevel = 0;
 char debugText[20];
 int idxPauseOption = 0;
+int startCountDown = 3;
 
 bool gravity20G = false;
 bool gameOver = false;
@@ -130,6 +134,7 @@ void start(void) {
     lineClearSound = LoadSound("res/snd/lineClear.wav");
     moveSound = LoadSound("res/snd/move.wav");
     preRotateSound = LoadSound("res/snd/preRotate.wav");
+    selectSound = LoadSound("res/snd/select.wav");
 
     activePiece.tileset = blockTileset;
     
@@ -142,7 +147,8 @@ void start(void) {
 
 void update(void) {
     
-    if (IsKeyPressed(KEY_ESCAPE) && !inMenu) {
+    if (IsKeyPressed(KEY_ESCAPE) && !inMenu && !gameOver) {
+        idxPauseOption = 0;
         pause = !pause;
     }
 
@@ -152,18 +158,24 @@ void update(void) {
         TakeScreenshot(TextFormat("screenshots/%d-%02d-%02d_%02d-%02d-%02d.png", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec));
     }
 
+    if (IsKeyPressed(KEY_R)) {
+        resetGame();
+        inMenu = false;
+        startTimer(&delayStartTimer, startCountDown);
+    }
+
     if (IsKeyReleased(KEY_ENTER) && gameOver) {
         resetGame();
     }
 
-    if (!gameOver && !inMenu && !pause) {
+    if (!gameOver && !inMenu && !pause && TimerDone(delayStartTimer)) {
         spawnQueuedPiece(&activePiece, tickSpeed, playField);
         checkIfAtBottom(&activePiece, playField, lineClearSpeed, lockDelay, appearanceDelay);
         processInput(&activePiece, playField, delayedAutoShift, autoRepeatRate, lockDelay);
         moveDown(&activePiece, playField, tickSpeed, lineClearSpeed, lockDelay, appearanceDelay, gravity20G);
     }
     else if (inMenu){
-        inMenu = !processMenuInput(&gameType);
+        inMenu = !processMenuInput(&gameType, &delayStartTimer, startCountDown);
         updateLevel();
     }
     else if (gameOver) {
@@ -192,20 +204,33 @@ void render(void) {
         drawHeldPiece(activePiece, playFieldPos, cellSize);
         drawStackOutline(playField, playFieldPos, cellSize, invisiblePieces);
 
-        if (!gameOver && !inMenu) {
+        if (!gameOver && !inMenu && TimerDone(delayStartTimer)) {
             drawActivePiece(activePiece, playFieldPos, cellSize);
             drawGhostPiece(&activePiece, playField, playFieldPos, cellSize);
         }
         else if (inMenu) {
             drawMenu(gameType, playFieldPos);
         }
-        else {
+        else if (gameOver) {
             drawActivePiece(activePiece, playFieldPos, cellSize);
             drawGameOverMenu(playFieldPos, cellSize);
         }
-
+        
         if (pause) {
             drawPauseMenu(idxPauseOption, playFieldPos, cellSize);
+        }
+
+        if (!TimerDone(delayStartTimer)) {
+            int currentCount = (int)GetElapsed(delayStartTimer);
+            int countDownNumber;
+            switch(currentCount) {
+                case 0: countDownNumber = 3; break;
+                case 1: countDownNumber = 2; break;
+                case 2: countDownNumber = 1; break;
+            }
+            DrawText(TextFormat("%d", countDownNumber), 
+                    playFieldPos.x + ((cellSize * matrixWidth) / 2) - 25, 
+                    playFieldPos.y + ((cellSize * matrixHeight) / 2), 100, WHITE);
         }
         
         drawBorder(playFieldPos, frameTileset, cellSize, frameColor);
@@ -241,6 +266,7 @@ void cleanUp(void) {
     UnloadSound(lineClearSound);
     UnloadSound(moveSound);
     UnloadSound(preRotateSound);
+    UnloadSound(selectSound);
     
     CloseWindow();
 }
