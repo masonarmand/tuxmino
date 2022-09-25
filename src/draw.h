@@ -12,5 +12,6 @@ void drawPlayField(Block** playField, Vector2 playFieldPos, int cellSize, bool i
 void drawStackOutline(Block** playField, Vector2 playFieldPos, int cellSize, bool isInvisible);
 void drawMenu(int gameType, Vector2 playFieldPos);
 void drawPauseMenu(int idxOption, Vector2 playFieldPos);
+void drawGameOverMenu(Vector2 playFieldPos, int cellSize);
 
 #endif

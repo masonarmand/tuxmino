@@ -260,3 +260,9 @@ void drawPauseMenu(int idxOption, Vector2 playFieldPos) {
     DrawText("Main Menu", playFieldPos.x, 160 + playFieldPos.y, 40, mainMenuColor);
     DrawText("Quit", playFieldPos.x, 200 + playFieldPos.y, 40, quitColor);
 }
+
+void drawGameOverMenu(Vector2 playFieldPos, int cellSize) {
+    DrawRectangle(playFieldPos.x, playFieldPos.y + (2 * cellSize), matrixWidth * cellSize, (matrixHeight -2) * cellSize, (Color){0,0,0,220});
+    DrawText("GAME OVER", playFieldPos.x, playFieldPos.y + ((cellSize * matrixHeight) / 2), 52, WHITE);
+    DrawText("Press Enter to Restart", playFieldPos.x + 3, playFieldPos.y + ((cellSize * matrixHeight) / 2) + 100, 26, RED);
+}

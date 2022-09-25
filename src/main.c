@@ -14,7 +14,8 @@ const int cellSize = 32;
 const int matrixHeight = 22;
 const int matrixWidth = 10;
 Block** playField; // 2d array for playing area
-Vector2 playFieldPos = {(screenHeight/2) + matrixWidth, 84};
+// center the playing field
+Vector2 playFieldPos = {(screenWidth/2) - ((matrixWidth * cellSize) / 2), 84};
 
 Texture2D blockTileset;
 Texture2D frameTileset;
@@ -152,6 +153,10 @@ void update(void) {
         TakeScreenshot(TextFormat("screenshots/%d-%02d-%02d_%02d-%02d-%02d.png", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec));
     }
 
+    if (IsKeyReleased(KEY_ENTER) && gameOver) {
+        resetGame();
+    }
+
     if (!gameOver && !inMenu && !pause) {
         spawnQueuedPiece(&activePiece, tickSpeed, playField);
         checkIfAtBottom(&activePiece, playField, lineClearSpeed, lockDelay, appearanceDelay);
@@ -199,7 +204,7 @@ void render(void) {
         }
         else {
             drawActivePiece(activePiece, playFieldPos, cellSize);
-            DrawText("GAME OVER", playFieldPos.x, 200, 52, WHITE);
+            drawGameOverMenu(playFieldPos, cellSize);
         }
 
         if (pause) {
@@ -364,11 +369,11 @@ void advanceLevel(int lineCount) {
     updateLevel();
 }
 
-void declareGameOver() {
+void declareGameOver(void) {
     gameOver = true;
 }
 
-void resetGame() {
+void resetGame(void) {
     heldPiece = -1;
     inMenu = true;
     pause = false;
