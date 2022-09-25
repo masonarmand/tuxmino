@@ -4,7 +4,7 @@
 #include "main.h"
 #include "piece.h" // for pieces[7][4][4][4] global matrix containing every piece/rotation
 
-#define BOARD_BG (Color){ 0, 0, 0, 100 }
+#define BOARD_BG (Color){ 0, 0, 0, 240 }
 #define SHADOW (Color){ 231, 231, 231, 255 }
 #define GHOST (Color){ 255, 255, 255, 100 } 
 
@@ -63,32 +63,56 @@ void drawPiecePreview(Piece activePiece, Vector2 playFieldPos, int cellSize) {
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
                 int idx = upcomingPieces[i];
-
-                if (pieces[idx][0][y][x] != 0) {
-                    Rectangle frameRec = {pieces[idx][0][y][x]*cellSize, 0, cellSize, cellSize};
-                    Vector2 pos = {playFieldPos.x + (matrixWidth * cellSize) + (cellSize * 2) + (x*cellSize), playFieldPos.y + (i*160)+(y*cellSize)};
-                    DrawTextureRec(activePiece.tileset, frameRec, pos, WHITE); 
-                }   
+                if (i == 0) {
+                    if (pieces[idx][0][y][x] != 0) {
+                        Rectangle frameRec = {pieces[idx][0][y][x]*cellSize, 0, cellSize, cellSize};
+                        Vector2 pos = {playFieldPos.x + (matrixWidth * 32 / 2) + (x*cellSize) - (cellSize * 2), playFieldPos.y + (y*cellSize) - (cellSize * 2)};
+                        DrawTextureRec(activePiece.tileset, frameRec, pos, WHITE); 
+                    }   
+                }
+                else {
+                    if (pieces[idx][0][y][x] != 0) {
+                        Rectangle frameRec = {pieces[idx][0][y][x]*cellSize, 0, cellSize, cellSize};
+                        Rectangle pos = 
+                        {
+                            playFieldPos.x + (matrixWidth * 32 / 2) + ((x*cellSize)/2) + (cellSize * 2)+(cellSize/2),
+                            playFieldPos.y + ((y*cellSize)/2) - (cellSize/2),
+                            cellSize / 2,
+                            cellSize / 2
+                        };
+                        if (i == 1) {
+                            DrawTexturePro(activePiece.tileset, frameRec, pos, (Vector2){0,0}, 0, WHITE);
+                        }
+                        else DrawTexturePro(activePiece.tileset, frameRec, (Rectangle){pos.x + (i * cellSize) + (cellSize/2), pos.y, pos.width, pos.height}, (Vector2){0,0}, 0, WHITE);
+                    }   
+                }
             }   
         }   
     }   
+    DrawText("NEXT", playFieldPos.x + (matrixWidth * 32 / 2) - cellSize, playFieldPos.y - (cellSize * 2), 20, GREEN);
 
 }
 
-void drawheldPiece(Piece activePiece, int cellSize) {
+void drawHeldPiece(Piece activePiece, Vector2 playFieldPos, int cellSize) {
     if (heldPiece != -1) {
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
 
                 if (pieces[heldPiece][0][y][x] != 0) {
                     Rectangle frameRec = {pieces[heldPiece][0][y][x]*cellSize, 0, cellSize, cellSize};
-                    Vector2 pos = {x*cellSize, y*cellSize};
-                    DrawTextureRec(activePiece.tileset, frameRec, pos, WHITE);
+                    Rectangle pos = 
+                    {
+                        playFieldPos.x + (x*cellSize/2),
+                        playFieldPos.y + ((y*cellSize)/2) - (cellSize/2),
+                        cellSize / 2,
+                        cellSize / 2
+                    };
+                    DrawTexturePro(activePiece.tileset, frameRec, pos, (Vector2){0,0}, 0, WHITE);
                 }
             }
         }
-
     }
+    DrawText("HELD", playFieldPos.x, playFieldPos.y - ((cellSize / 2) * 3), 20, YELLOW);
 }
 
 void drawActivePiece(Piece activePiece, Vector2 playFieldPos, int cellSize) {
@@ -128,7 +152,7 @@ void drawGhostPiece(Piece* activePiece, Block** playField, Vector2 playFieldPos,
 }
 
 void drawPlayField(Block** playField, Vector2 playFieldPos, int cellSize, bool isInvisible) {
-    DrawRectangle(playFieldPos.x, playFieldPos.y, matrixWidth * cellSize, matrixHeight * cellSize, BOARD_BG);
+    DrawRectangle(playFieldPos.x, playFieldPos.y + (2 * cellSize), matrixWidth * cellSize, (matrixHeight -2) * cellSize, BOARD_BG);
     if (!isInvisible) {
         for (int y = 0; y < matrixHeight; y++) {
             for (int x = 0; x < matrixWidth; x++) {
@@ -215,7 +239,7 @@ void drawMenu(int gameType, Vector2 playFieldPos) {
     DrawText("20G practice", playFieldPos.x, 280 + playFieldPos.y, 40, color20g);
 }
 
-void drawPauseMenu(int idxOption, Vector2 playFieldPos) {
+void drawPauseMenu(int idxOption, Vector2 playFieldPos, int cellSize) {
     Color resumeColor = WHITE;
     Color mainMenuColor = WHITE;
     Color quitColor = WHITE;
@@ -231,8 +255,19 @@ void drawPauseMenu(int idxOption, Vector2 playFieldPos) {
             quitColor = RED;
             break;
     }
+    
+    DrawRectangle(playFieldPos.x, playFieldPos.y + (2 * cellSize), matrixWidth * cellSize, (matrixHeight -2) * cellSize, (Color){0,0,0,220});
+    DrawText("Paused", playFieldPos.x, 70 + playFieldPos.y, 50, WHITE);
+    // draw line under paused text
+    DrawLineEx((Vector2){playFieldPos.x, 118 + playFieldPos.y}, (Vector2){playFieldPos.x + (matrixWidth * cellSize), 118 + playFieldPos.y}, 1.5f, WHITE);
 
     DrawText("Resume", playFieldPos.x, 120 + playFieldPos.y, 40, resumeColor);
     DrawText("Main Menu", playFieldPos.x, 160 + playFieldPos.y, 40, mainMenuColor);
     DrawText("Quit", playFieldPos.x, 200 + playFieldPos.y, 40, quitColor);
+}
+
+void drawGameOverMenu(Vector2 playFieldPos, int cellSize) {
+    DrawRectangle(playFieldPos.x, playFieldPos.y + (2 * cellSize), matrixWidth * cellSize, (matrixHeight -2) * cellSize, (Color){0,0,0,220});
+    DrawText("GAME OVER", playFieldPos.x, playFieldPos.y + ((cellSize * matrixHeight) / 2), 52, WHITE);
+    DrawText("Press Enter to Restart", playFieldPos.x + 3, playFieldPos.y + ((cellSize * matrixHeight) / 2) + 100, 26, RED);
 }

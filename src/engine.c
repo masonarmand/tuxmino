@@ -466,10 +466,12 @@ void moveDown(Piece* activePiece, Block** playField, float tickSpeed, float line
 }
 
 
-void softDrop(Piece* activePiece, Block** playField, float lockDelay) {
-    if (canSoftDrop) {
+void softDrop(Piece* activePiece, Block** playField, float lockDelay, float autoRepeatRate) {
+    if (TimerDone(keyRepeatRateTimer) && canSoftDrop) {
         if (canMove(activePiece->position, activePiece, playField, 0, 1)) {
             activePiece->position.y += 1;
+            startTimer(&keyRepeatRateTimer, autoRepeatRate);
+            PlaySound(moveSound);
         } 
         else {
             pieceLockDelayTimer.startTime = lockDelay;
@@ -578,9 +580,7 @@ void processInput(Piece* activePiece, Block** playField, float delayedAutoShift,
         startTimer(&keyRepeatDelayTimer, delayedAutoShift);
     } 
     else if (IsKeyPressed(KEY_DOWN)) {
-        resetTimer(&keyRepeatDelayTimer);
-        softDrop(activePiece, playField, lockDelay);
-        startTimer(&keyRepeatDelayTimer, delayedAutoShift);
+        softDrop(activePiece, playField, lockDelay, autoRepeatRate);
     }
 
     if (IsKeyDown(KEY_RIGHT)) {
@@ -588,7 +588,7 @@ void processInput(Piece* activePiece, Block** playField, float delayedAutoShift,
     } else if (IsKeyDown(KEY_LEFT)) {
         movePiece(activePiece, playField, -1, lockDelay, autoRepeatRate);
     } else if (IsKeyDown(KEY_DOWN)) {
-        softDrop(activePiece, playField, lockDelay);
+        softDrop(activePiece, playField, lockDelay, autoRepeatRate);
     }
 
     if (IsKeyReleased(KEY_DOWN)){
@@ -601,10 +601,11 @@ void processInput(Piece* activePiece, Block** playField, float delayedAutoShift,
 
 }
 
-bool processMenuInput(int* gameType) {
+bool processMenuInput(int* gameType, Timer* countDown, int seconds) {
     bool gameEntered = false;
     
     if (IsKeyPressed(KEY_UP)) {
+        PlaySound(selectSound);
         if (*gameType == 0) {
             *gameType = 4;
         }
@@ -614,6 +615,7 @@ bool processMenuInput(int* gameType) {
     }
 
     if (IsKeyPressed(KEY_DOWN)) {
+        PlaySound(selectSound);
         if (*gameType == 4) {
             *gameType = 0;
         }
@@ -623,6 +625,7 @@ bool processMenuInput(int* gameType) {
     }
 
     if (IsKeyPressed(KEY_ENTER)) {
+        startTimer(countDown, seconds);
         gameEntered = true;
     }
 
@@ -633,6 +636,7 @@ bool processPauseMenuInput(int* idxOption) {
     bool isSelected = false;
 
     if (IsKeyPressed(KEY_UP)) {
+        PlaySound(selectSound);
         if (*idxOption <= 0) {
             *idxOption = 2;
         } else {
@@ -641,6 +645,7 @@ bool processPauseMenuInput(int* idxOption) {
     }
 
     if (IsKeyPressed(KEY_DOWN)) {
+        PlaySound(selectSound);
         if (*idxOption >= 2) {
             *idxOption = 0;
         } else {

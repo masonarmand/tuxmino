@@ -6,15 +6,16 @@
 #include <stdio.h> // required for srand
 
 
-static const int screenWidth = 1024;
-static const int screenHeight = 704;
+static const int screenWidth = 1224;
+static const int screenHeight = 820;
 
 const int cellSize = 32;
 
 const int matrixHeight = 22;
 const int matrixWidth = 10;
 Block** playField; // 2d array for playing area
-Vector2 playFieldPos = {160, -32};
+// center the playing field
+Vector2 playFieldPos = {(screenWidth/2) - ((matrixWidth * cellSize) / 2), 84};
 
 Texture2D blockTileset;
 Texture2D frameTileset;
@@ -45,15 +46,18 @@ Sound cheerSound;
 Sound lineClearSound;
 Sound moveSound;
 Sound preRotateSound;
+Sound selectSound;
 
 Piece activePiece;
 
-int framesCounter; // used for pause blinking animation
+Timer delayStartTimer;
+
 int gameType = 0;
 int currentLevel = 0;
 int maxLevel = 0;
 char debugText[20];
 int idxPauseOption = 0;
+int startCountDown = 3;
 
 bool gravity20G = false;
 bool gameOver = false;
@@ -87,7 +91,7 @@ double framesToMilliseconds(int frames); // Convert frames to miliseconds
 
 int main(void) {
     InitWindow(screenWidth, screenHeight, "tuxmino v0.1");
-    SetTargetFPS(60); // lock game to 60 frames per second
+    //SetTargetFPS(60); // lock game to 60 frames per second
     SetExitKey(KEY_NULL);
     InitAudioDevice();
 
@@ -130,6 +134,7 @@ void start(void) {
     lineClearSound = LoadSound("res/snd/lineClear.wav");
     moveSound = LoadSound("res/snd/move.wav");
     preRotateSound = LoadSound("res/snd/preRotate.wav");
+    selectSound = LoadSound("res/snd/select.wav");
 
     activePiece.tileset = blockTileset;
     
@@ -142,7 +147,8 @@ void start(void) {
 
 void update(void) {
     
-    if (IsKeyPressed(KEY_ESCAPE) && !inMenu) {
+    if (IsKeyPressed(KEY_ESCAPE) && !inMenu && !gameOver) {
+        idxPauseOption = 0;
         pause = !pause;
     }
 
@@ -152,22 +158,30 @@ void update(void) {
         TakeScreenshot(TextFormat("screenshots/%d-%02d-%02d_%02d-%02d-%02d.png", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec));
     }
 
-    if (!gameOver && !inMenu && !pause) {
+    if (IsKeyPressed(KEY_R)) {
+        resetGame();
+        inMenu = false;
+        startTimer(&delayStartTimer, startCountDown);
+    }
+
+    if (IsKeyReleased(KEY_ENTER) && gameOver) {
+        resetGame();
+    }
+
+    if (!gameOver && !inMenu && !pause && TimerDone(delayStartTimer)) {
         spawnQueuedPiece(&activePiece, tickSpeed, playField);
         checkIfAtBottom(&activePiece, playField, lineClearSpeed, lockDelay, appearanceDelay);
         processInput(&activePiece, playField, delayedAutoShift, autoRepeatRate, lockDelay);
         moveDown(&activePiece, playField, tickSpeed, lineClearSpeed, lockDelay, appearanceDelay, gravity20G);
     }
     else if (inMenu){
-        inMenu = !processMenuInput(&gameType);
+        inMenu = !processMenuInput(&gameType, &delayStartTimer, startCountDown);
         updateLevel();
     }
     else if (gameOver) {
         invisiblePieces = false;
     }
     else if (pause) {
-        framesCounter++;
-
         bool isSelected = processPauseMenuInput(&idxPauseOption);
         if (isSelected) {
             if (idxPauseOption == 0) {
@@ -184,31 +198,39 @@ void update(void) {
 void render(void) {
     BeginDrawing();
         ClearBackground(BLACK);
-        DrawTexture(background, 0, 0, WHITE);
-        
+        DrawTexturePro(background, (Rectangle){0,0, background.width, background.height}, (Rectangle){0,0, screenWidth, screenHeight}, (Vector2){0,0}, 0, WHITE); 
         drawPlayField(playField, playFieldPos, cellSize, invisiblePieces); 
         drawPiecePreview(activePiece, playFieldPos, cellSize);
-        drawheldPiece(activePiece, cellSize);
+        drawHeldPiece(activePiece, playFieldPos, cellSize);
         drawStackOutline(playField, playFieldPos, cellSize, invisiblePieces);
 
-        if (!gameOver && !inMenu) {
+        if (!gameOver && !inMenu && TimerDone(delayStartTimer)) {
             drawActivePiece(activePiece, playFieldPos, cellSize);
             drawGhostPiece(&activePiece, playField, playFieldPos, cellSize);
         }
         else if (inMenu) {
             drawMenu(gameType, playFieldPos);
         }
-        else {
+        else if (gameOver) {
             drawActivePiece(activePiece, playFieldPos, cellSize);
-            DrawText("GAME OVER", playFieldPos.x, 200, 52, WHITE);
+            drawGameOverMenu(playFieldPos, cellSize);
+        }
+        
+        if (pause) {
+            drawPauseMenu(idxPauseOption, playFieldPos, cellSize);
         }
 
-        if (pause) {
-            if ((framesCounter/30)%2) {
-                DrawText("Paused", playFieldPos.x + (matrixWidth * cellSize) + 300, playFieldPos.y + ((matrixHeight * 32)/2), 40, WHITE);
+        if (!TimerDone(delayStartTimer)) {
+            int currentCount = (int)GetElapsed(delayStartTimer);
+            int countDownNumber;
+            switch(currentCount) {
+                case 0: countDownNumber = 3; break;
+                case 1: countDownNumber = 2; break;
+                case 2: countDownNumber = 1; break;
             }
-
-            drawPauseMenu(idxPauseOption, playFieldPos);
+            DrawText(TextFormat("%d", countDownNumber), 
+                    playFieldPos.x + ((cellSize * matrixWidth) / 2) - 25, 
+                    playFieldPos.y + ((cellSize * matrixHeight) / 2), 100, WHITE);
         }
         
         drawBorder(playFieldPos, frameTileset, cellSize, frameColor);
@@ -244,6 +266,7 @@ void cleanUp(void) {
     UnloadSound(lineClearSound);
     UnloadSound(moveSound);
     UnloadSound(preRotateSound);
+    UnloadSound(selectSound);
     
     CloseWindow();
 }
@@ -365,11 +388,11 @@ void advanceLevel(int lineCount) {
     updateLevel();
 }
 
-void declareGameOver() {
+void declareGameOver(void) {
     gameOver = true;
 }
 
-void resetGame() {
+void resetGame(void) {
     heldPiece = -1;
     inMenu = true;
     pause = false;

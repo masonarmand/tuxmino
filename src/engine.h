@@ -35,7 +35,7 @@ void checkIfAtBottom(Piece* activePiece, Block** playField, float lineClearSpeed
 void processInput(Piece* activePiece, Block** playField, float delayedAutoShift, float autoRepeatRate, float lockDelay);
 void moveDown(Piece* activePiece, Block** playField, float tickSpeed, float lineClearSpeed, float lockDelay, float appearanceDelay, bool gravity20G);
 
-bool processMenuInput(int* gameType);
+bool processMenuInput(int* gameType, Timer* countDown, int seconds);
 bool processPauseMenuInput(int* idxOption);
 
 bool canDrawPiece();
