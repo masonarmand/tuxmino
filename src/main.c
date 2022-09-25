@@ -90,7 +90,7 @@ void updateLevel(void);    // change speed timings based on current game mode an
 double framesToMilliseconds(int frames); // Convert frames to miliseconds
 
 int main(void) {
-    InitWindow(screenWidth, screenHeight, "tuxmino v0.1");
+    InitWindow(screenWidth, screenHeight, "tuxmino v0.2");
     //SetTargetFPS(60); // lock game to 60 frames per second
     SetExitKey(KEY_NULL);
     InitAudioDevice();
