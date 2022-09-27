@@ -58,6 +58,7 @@ int maxLevel = 0;
 char debugText[20];
 int idxPauseOption = 0;
 int startCountDown = 3;
+int lastCount = -1; // Used by the countdown timer to check when to play sound.
 
 bool gravity20G = false;
 bool gameOver = false;
@@ -231,6 +232,12 @@ void render(void) {
             DrawText(TextFormat("%d", countDownNumber), 
                     playFieldPos.x + ((cellSize * matrixWidth) / 2) - 25, 
                     playFieldPos.y + ((cellSize * matrixHeight) / 2), 100, WHITE);
+
+            // Play sound
+            if (lastCount != currentCount) {
+                lastCount = currentCount;
+                PlaySound(pieceLockSound);
+            }
         }
         
         drawBorder(playFieldPos, frameTileset, cellSize, frameColor);
@@ -401,6 +408,8 @@ void resetGame(void) {
     currentLevel = 0;
     generateInitialPreview(&activePiece);
     playField = initMatrix(matrixWidth, matrixHeight, blockTileset);
+
+    int lastCount = -1;
 }
 
 double framesToMilliseconds(int frames) {
