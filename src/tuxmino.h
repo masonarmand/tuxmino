@@ -310,7 +310,7 @@ double gravityLevelToMilliseconds(int gravity);
 void freeGameMode(GameMode* mode);
 void loadGameModes(GameModeList* list);
 void gameModeUpdate(GameMode* mode);
-void gameModeLvl(int lineCount, int level, int amount, GameMode* mode);
+void gameModeLvl(int lineCount, int amount, GameMode* mode);
 void resetGameMode(GameMode* mode);
 
 #endif

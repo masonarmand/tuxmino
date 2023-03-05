@@ -49,11 +49,11 @@ function update()
     end
 end
 
-function advanceLevel(amount, level, lineCount)
+function advanceLevel(amount, lineCount)
 
-    setLevel(amount + level + lineCount)
+    setLevel(amount + getLevel() + lineCount)
 
-    if level >= 1000 then
+    if getLevel() >= 1000 then
         setBoneBlocks(true)
         set3D(false)
     else
@@ -61,19 +61,19 @@ function advanceLevel(amount, level, lineCount)
         set3D(true)
     end
 
-    if level < 200 then
+    if getLevel() < 200 then
         setLockDelay(18)
-	elseif level < 300 then
+	elseif getLevel() < 300 then
         setLockDelay(17)
-	elseif level < 500 then
+	elseif getLevel() < 500 then
         setLockDelay(15)
-	elseif level < 600 then
+	elseif getLevel() < 600 then
         setLockDelay(13)
-	elseif level < 1100 then
+	elseif getLevel() < 1100 then
         setLockDelay(12)
-	elseif level < 1200 then
+	elseif getLevel() < 1200 then
         setLockDelay(10)
-	elseif level < 1300 then
+	elseif getLevel() < 1300 then
         setLockDelay(8)
     else
         setLockDelay(8)

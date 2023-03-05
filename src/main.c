@@ -351,7 +351,7 @@ void update(void) {
                 if (gameModes.modes[modeId].level > gameModes.modes[modeId].maxLevel) {
                     gameModes.modes[modeId].level = 0;
                 }
-                gameModeLvl(0, gameModes.modes[modeId].level, 0, &gameModes.modes[modeId]);
+                gameModeLvl(0, 0, &gameModes.modes[modeId]);
             }
             else if (IsKeyPressed(config.KeyBinds.left) && idxGameModeSettingOption == 0) {
                 if (gameModes.modes[modeId].level == 0) {
@@ -360,7 +360,7 @@ void update(void) {
                 else {
                     gameModes.modes[modeId].level -= 100;
                 }
-                gameModeLvl(0, gameModes.modes[modeId].level, 0, &gameModes.modes[modeId]);
+                gameModeLvl(0, 0, &gameModes.modes[modeId]);
             }
 
             // rotation rule select
@@ -586,13 +586,12 @@ void updateLevel(void)
     if (GetGameTimerElapsed(gameTimer) == 0 && gameStarted) {
         startGameTimer(&gameTimer);
     }
-    //gameModeLvl(0, gameModes.modes[modeId].level, 0, &gameModes.modes[modeId]);
     gameModeUpdate(&gameModes.modes[modeId]);
 }
 
 void advanceLevel(int lineCount)
 {
-    gameModeLvl(lineCount, gameModes.modes[modeId].level, 1, &gameModes.modes[modeId]);
+    gameModeLvl(lineCount, 1, &gameModes.modes[modeId]);
 }
 
 void declareGameOver(void)

@@ -55,10 +55,10 @@ function update()
 end
 
 --[ This Function gets called every time a piece lands --]
-function advanceLevel(amount, level, lineCount)
-    setLevel(level + amount + lineCount)
+function advanceLevel(amount, lineCount)
+    setLevel(getLevel() + amount + lineCount)
 
-    if (level >= 100) then
+    if (getLevel() >= 100) then
         setBackground(1)
         setSectionLevel(200)
         setGravity(5120)

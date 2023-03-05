@@ -43,15 +43,15 @@ end
 function update()
 end
 
-function advanceLevel(amount, level, lineCount)
+function advanceLevel(amount, lineCount)
 
     -- Calculate Score
-    setScore(getScore() + (((level + lineCount) / 4) + getSoftFrames()) * lineCount) -- TODO combo
+    setScore(getScore() + (((getLevel() + lineCount) / 4) + getSoftFrames()) * lineCount) -- TODO combo
     setSoftFrames(0)
 
     -- advance level if not on a level stop
-    if ((level % 100 ~= 99 and level ~= 498) or lineCount ~= 0) then
-        setLevel(amount + level + lineCount)
+    if ((getLevel() % 100 ~= 99 and getLevel() ~= 498) or lineCount ~= 0) then
+        setLevel(amount + getLevel() + lineCount)
     end
 
     if (getLevel() >= 400) then
@@ -61,35 +61,35 @@ function advanceLevel(amount, level, lineCount)
     end
 
     -- Set gravity based on level
-	if     (level < 30)  then setGravity(4)
-	elseif (level < 40)  then setGravity(5)
-	elseif (level < 80)  then setGravity(7)
-	elseif (level < 100)  then setGravity(9)
-	elseif (level < 140)  then setGravity(12)
-	elseif (level < 180)  then setGravity(16)
-	elseif (level < 200)  then setGravity(22)
-	elseif (level < 240)  then setGravity(32)
-	elseif (level < 280) then setGravity(45)
-	elseif (level < 300) then setGravity(67)
-	elseif (level < 340) then setGravity(99)
-	elseif (level < 380) then setGravity(112)
-	elseif (level < 400) then setGravity(151)
-	elseif (level < 410) then setGravity(235)
-	elseif (level < 420) then setGravity(374)
-	elseif (level < 430) then setGravity(604)
-	elseif (level < 440) then setGravity(1000)
-	elseif (level < 450) then setGravity(1692)
-	elseif (level < 460) then setGravity(2926)
+	if     (getLevel() < 30)  then setGravity(4)
+	elseif (getLevel() < 40)  then setGravity(5)
+	elseif (getLevel() < 80)  then setGravity(7)
+	elseif (getLevel() < 100)  then setGravity(9)
+	elseif (getLevel() < 140)  then setGravity(12)
+	elseif (getLevel() < 180)  then setGravity(16)
+	elseif (getLevel() < 200)  then setGravity(22)
+	elseif (getLevel() < 240)  then setGravity(32)
+	elseif (getLevel() < 280) then setGravity(45)
+	elseif (getLevel() < 300) then setGravity(67)
+	elseif (getLevel() < 340) then setGravity(99)
+	elseif (getLevel() < 380) then setGravity(112)
+	elseif (getLevel() < 400) then setGravity(151)
+	elseif (getLevel() < 410) then setGravity(235)
+	elseif (getLevel() < 420) then setGravity(374)
+	elseif (getLevel() < 430) then setGravity(604)
+	elseif (getLevel() < 440) then setGravity(1000)
+	elseif (getLevel() < 450) then setGravity(1692)
+	elseif (getLevel() < 460) then setGravity(2926)
 	else setGravity(5120)
     end
 
 
-    if (level >= 500 and getCreditRoll() == false) then
+    if (getLevel() >= 500 and getCreditRoll() == false) then
         setInvis(true)
         setCreditRoll(true)
     end
 
-    if (level >= 499) then
+    if (getLevel() >= 499) then
         setLevel(499)
         if (getCreditRoll() == false) then
             setInvis(true)

@@ -55,45 +55,14 @@ function update()
 end
 
 --[ This Function gets called every time a piece lands --]
-function advanceLevel(amount, level, lineCount)
+function advanceLevel(amount, lineCount)
 
-    -- timings->score += (((*level + lines) / 4) + timings->linesSoftDropped) * lines * timings->prevComboScore;
-    -- timings->linesSoftDropped = 0;
-
-
-    -- advance level if not on a level stop
-    if ((level % 100 ~= 99 and level ~= 998) or lineCount ~= 0) then
-        setLevel(amount + level + lineCount)
-    end
-
-    -- Calculate Score
-    if (lineCount > 0) then
-        combo = (lineCount - 1) * 2
-        addScore((math.ceil((getLevel() + lineCount) / 4) + getSoftFrames()) * lineCount * combo) -- TODO combo and bravo
-    end
-    setSoftFrames(0)
-
-    if (getLevel() >= 900) then
-        setSectionLevel(999)
-    else
-        setSectionLevel(math.floor(getLevel() / 100 + 1) * 100)
-    end
+    setLevel(amount + getLevel() + lineCount)
 
     -- Set gravity based on level
-	if     (level >= 100)  then setGravity(5120)
-	else setGravity(4)
-    end
-
-
-    if (getSectionLevel() ~= 999) then
-        bgIdx = 0
-
-        if (getSectionLevel() > 100 and getSectionLevel() ~= 999) then
-            bgIdx = (getSectionLevel() - 100) / 100
-        end
-
-        setBackground(bgIdx)
-    else
-        setBackground(9)
+	if (getLevel() >= 100) then
+        setGravity(5120)
+	else
+        setGravity(4)
     end
 end

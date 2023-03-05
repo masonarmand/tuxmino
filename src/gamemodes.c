@@ -182,13 +182,12 @@ void gameModeUpdate(GameMode* mode)
 }
 
 
-void gameModeLvl(int lineCount, int level, int amount, GameMode* mode)
+void gameModeLvl(int lineCount, int amount, GameMode* mode)
 {
     lua_getglobal(mode->interpreter, "advanceLevel");
     lua_pushnumber(mode->interpreter, amount);
-    lua_pushnumber(mode->interpreter, level);
     lua_pushnumber(mode->interpreter, lineCount);
-    if (lua_pcall(mode->interpreter, 3, 0, 0) != 0) {
+    if (lua_pcall(mode->interpreter, 2, 0, 0) != 0) {
         printf("LUA: [ERROR] in advanceLevel(): %s\n", lua_tostring(mode->interpreter, -1));
     }
     lua_pop(mode->interpreter, 0);
@@ -201,7 +200,7 @@ void resetGameMode(GameMode* mode)
     mode->rule.score = 0;
     mode->rule.creditRoll = false;
     resetTimer(&mode->rule.creditRollTimer);
-    gameModeLvl(0, 0, 0, mode);
+    gameModeLvl(0, 0, mode);
 }
 
 

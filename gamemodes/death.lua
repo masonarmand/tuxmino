@@ -49,9 +49,9 @@ function update()
     end
 end
 
-function advanceLevel(amount, level, lineCount)
+function advanceLevel(amount, lineCount)
 
-    setLevel(amount + level + lineCount)
+    setLevel(amount + getLevel() + lineCount)
 
 
     --bgIdx = math.floor(level / 100)
