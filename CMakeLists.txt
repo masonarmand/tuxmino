@@ -9,7 +9,7 @@
 # cmake .. -G "MinGW Makefiles"
 # instead of
 # cmake ..
-# to force cmake to use MinGW's gcc instead of whatever default shit it uses.
+# to force cmake to use MinGW's gcc instead of whatever default stuff it uses.
 # If you get an error about not being able to find/open raylib.lib, this is probably why.
 #
 # Also, you will need to copy the res/folder to the same directory as the executable.
