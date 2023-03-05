@@ -18,7 +18,7 @@ int upcomingPieces[3];
 int queuedLines[4] = {-1,-1,-1,-1};
 int heldPiece = -1;
 
-// non externed internal functions
+// internal functions
 void shiftBag(int newPiece);
 bool bagContains(int piece);
 bool centerColumnCheck(Piece* activePiece, PlayField playField);
@@ -38,9 +38,10 @@ void performWallKick(Piece* activePiece, SpeedSettings rule, PlayField playField
 void softDrop(Piece* activePiece, PlayField playField, SpeedSettings* timings);
 void lockIfFloorKicked(Piece* activePiece, PlayField playField, SpeedSettings timings);
 void movePiece(Piece* activePiece, PlayField playField, int dir, SpeedSettings timings);
-void moveResetDAS(Piece* activePiece, PlayField playField, int dir, SpeedSettings timings);
+void moveIgnoreDAS(Piece* activePiece, PlayField playField, int dir, SpeedSettings timings);
 void rotateRight(Piece* activePiece, SpeedSettings rule, PlayField playField);
 void rotateLeft(Piece* activePiece, SpeedSettings rule, PlayField playField);
+void makePlayFieldCopy(PlayField playField);
 
 static Timer keyRepeatRateTimer;
 static Timer keyRepeatDelayTimer;
@@ -314,21 +315,23 @@ void queuePiece(Piece* activePiece, PlayField playField) {
  * Swaps the current piece with the held piece.
  */
 void holdSwap(Piece* activePiece, SpeedSettings rule, PlayField playField) {
-    if (canHold && rule.holdEnabled) {
-        int currentPiece = activePiece->pieceIndex;
-        if (heldPiece == -1) {
-            activePiece->pieceIndex = upcomingPieces[0];
-            updatePreview(rule);
-        }
-        else {
-            activePiece->pieceIndex = heldPiece;
-        }
-        canHold = false;
-        heldPiece = currentPiece;
-        activePiece->position.x = (int)(playField.width / 2)-2;
-        activePiece->position.y = 1.0f;
-        activePiece->rotIndex = 0;
+    if (!canHold || !rule.holdEnabled) {
+        return;
     }
+
+    int currentPiece = activePiece->pieceIndex;
+    if (heldPiece == -1) {
+        activePiece->pieceIndex = upcomingPieces[0];
+        updatePreview(rule);
+    }
+    else {
+        activePiece->pieceIndex = heldPiece;
+    }
+    canHold = false;
+    heldPiece = currentPiece;
+    activePiece->position.x = (int)(playField.width / 2)-2;
+    activePiece->position.y = 1.0f;
+    activePiece->rotIndex = 0;
 }
 
 
@@ -338,7 +341,8 @@ void holdSwap(Piece* activePiece, SpeedSettings rule, PlayField playField) {
  */
 void spawnQueuedPiece(Piece* activePiece, PlayField playField, SpeedSettings timings)
 {
-    if (queuedPiece == -1 || !TimerDone(appearanceDelayTimer) ||
+    if (queuedPiece == -1 ||
+        !TimerDone(appearanceDelayTimer) ||
         !TimerDone(lineClearDelayTimer))
     {
         return;
@@ -372,8 +376,9 @@ void spawnQueuedPiece(Piece* activePiece, PlayField playField, SpeedSettings tim
 
     int idx = activePiece->pieceIndex;
     // Pre rotation
-    if ((IsKeyDown(config.KeyBinds.ccw) || IsKeyDown(config.KeyBinds.ccwAlt)) &&
-        isValidRotation(pieces[idx][3], *activePiece, playField))
+    if ((IsKeyDown(config.KeyBinds.ccw) ||
+         IsKeyDown(config.KeyBinds.ccwAlt)) &&
+         isValidRotation(pieces[idx][3], *activePiece, playField))
     {
         activePiece->rotIndex = 3;
         PlaySound(preRotateSound);
@@ -402,6 +407,7 @@ void generateInitialPreview(Piece* activePiece, PlayField playField, SpeedSettin
 {
     upcomingPieces[0] = getRandomPiece(rule);
 
+    /* first piece cant be S or Z */
     while (upcomingPieces[0] == 4 || upcomingPieces[0] == 5) {
         upcomingPieces[0] = getRandomPiece(rule);
     }
@@ -465,23 +471,36 @@ void moveQueuedLinesDown(PlayField playField)
     unsigned int lastLineIdx;
 
     for (unsigned int i = 0; i < 4; i++) {
-        if (queuedLines[i] == -1) break;
-        else lastLineIdx = i;
+        if (queuedLines[i] == -1)
+            break;
+        else
+            lastLineIdx = i;
     }
 
-    if (isLinesQueued && TimerDone(lineClearDelayTimer)) {
-        for (unsigned int i = 0; i < 4; i++) {
-            if (queuedLines[i] != -1) {
-                bool playSound = (lastLineIdx == i);
-                moveRowsDown(queuedLines[i], playField, playSound);
-                queuedLines[i] = -1;
-                isLinesQueued = false;
-            }
-        }
-        resetTimer(&lineClearDelayTimer);
+    if (!isLinesQueued || !TimerDone(lineClearDelayTimer)) {
+        return;
     }
+
+    for (unsigned int i = 0; i < 4; i++) {
+        if (queuedLines[i] != -1) {
+            bool playSound = (lastLineIdx == i);
+            moveRowsDown(queuedLines[i], playField, playSound);
+            queuedLines[i] = -1;
+            isLinesQueued = false;
+        }
+    }
+    resetTimer(&lineClearDelayTimer);
 }
 
+
+void makePlayFieldCopy(PlayField playField)
+{
+    for (unsigned int y = 0; y < playField.height; y++) {
+        for (unsigned int x = 0; x < playField.width; x++) {
+            playField.copy[y][x] = playField.matrix[y][x];
+        }
+    }
+}
 
 /*
  * Check to see if there are any rows that are completely full.
@@ -494,21 +513,18 @@ void checkForLineClear(PlayField playField, SpeedSettings timings)
     bool copyBoard = true;
     for (unsigned int y = 0; y < playField.height; y++) {
         bool isFull = true;
+
         for (unsigned int x = 0; x < playField.width; x++) {
             if (playField.matrix[y][x].type == 0) {
                 isFull = false;
             }
         }
-        if (isFull) {
-            if (copyBoard) {
-                for (unsigned int cy = 0; cy < playField.height; cy++) {
-                    for (unsigned int cx = 0; cx < playField.width; cx++) {
-                        playField.copy[cy][cx] = playField.matrix[cy][cx];
-                    }
-                }
-                copyBoard = false;
-            }
 
+        if (isFull && copyBoard) {
+            makePlayFieldCopy(playField);
+            copyBoard = false;
+        }
+        if (isFull) {
             canRotate = false;
             fillRow(y, 0, playField);
             startTimer(&lineClearDelayTimer, timings.lineClearSpeed);
@@ -518,8 +534,10 @@ void checkForLineClear(PlayField playField, SpeedSettings timings)
         }
     }
 
-    if (lineCount == 4) PlaySound(cheerSound);
-    else if (lineCount >= 1) PlaySound(lineClearSound);
+    if (lineCount == 4)
+        PlaySound(cheerSound);
+    else if (lineCount >= 1)
+        PlaySound(lineClearSound);
 
     advanceLevel(lineCount);
 }
@@ -584,30 +602,33 @@ bool canMove(Vector2 position, Piece* activePiece, PlayField playField, int dirX
 
     for (unsigned int y = 0; y < 4; y++) {
         for (unsigned int x = 0; x < 4; x++) {
-            if (pieces[activePiece->pieceIndex][activePiece->rotIndex][y][x]) {
-                unsigned int xPos = x + position.x + dirX;
-                unsigned int yPos = y + position.y + dirY;
-
-                if (xPos < playField.width && yPos < playField.height) {
-                    int dirBlock = playField.matrix[yPos][xPos].type;
-                    if (dirBlock == 0) {
-                        move = true;
-                    }
-                    else if (dirBlock != 0 && pieces[activePiece->pieceIndex][activePiece->rotIndex][y][x] != 0){
-                        move = false;
-                        goto exitLoop;
-                    }
-                }
-                else {
-                    move = false;
-                    goto exitLoop;
-                }
+            if (pieces[activePiece->pieceIndex][activePiece->rotIndex][y][x] == 0) {
+                continue;
             }
 
+            unsigned int xPos = x + position.x + dirX;
+            unsigned int yPos = y + position.y + dirY;
+
+            if (xPos >= playField.width || yPos >= playField.height) {
+                move = false;
+                return move;
+            }
+
+            int dirBlock = playField.matrix[yPos][xPos].type;
+
+            if (dirBlock == 0) {
+                move = true;
+            }
+            else if (dirBlock != 0 &&
+                     pieces[activePiece->pieceIndex][activePiece->rotIndex][y][x] != 0)
+            {
+                move = false;
+                return move;
+            }
         }
     }
-    exitLoop:
-        return move;
+
+    return move;
 }
 
 
@@ -619,36 +640,26 @@ bool isTouchingStack(Piece* activePiece, PlayField playField)
 {
     bool touchingStack = false;
 
-    for (int y = 0; y < 4; y++) {
-        for (int x = 0; x < 4; x++) {
-            int xPos = activePiece->position.x + x;
-            int yPos = activePiece->position.y + y;
+    for (unsigned int y = 0; y < 4; y++) {
+        for (unsigned int x = 0; x < 4; x++) {
+            unsigned int xPos = activePiece->position.x + x;
+            unsigned int yPos = activePiece->position.y + y;
             if (pieces[activePiece->pieceIndex][activePiece->rotIndex][y][x] == 0) {
                 continue;
             }
 
-            if (xPos - 1 < 0) {
+            if (xPos == 0 ||
+                playField.matrix[yPos][xPos - 1].type != 0 ||
+                xPos + 1 > playField.height - 3 ||
+                playField.matrix[yPos][xPos + 1].type != 0)
+            {
                 touchingStack = true;
-                goto exitTouchingStackLoop;
-            }
-            else if (playField.matrix[yPos][xPos - 1].type != 0) {
-                touchingStack = true;
-                goto exitTouchingStackLoop;
-            }
-
-            if (xPos + 1 > 19) {
-                touchingStack = true;
-                goto exitTouchingStackLoop;
-            }
-            else if (playField.matrix[yPos][xPos + 1].type != 0) {
-                touchingStack = true;
-                goto exitTouchingStackLoop;
+                return touchingStack;
             }
         }
     }
 
-    exitTouchingStackLoop:
-        return touchingStack;
+    return touchingStack;
 }
 
 
@@ -669,20 +680,14 @@ bool isTouchingFloor(Piece* activePiece, PlayField playField)
             unsigned int xPos = activePiece->position.x + x;
             unsigned int yPos = activePiece->position.y + y;
 
-            if (yPos + 1 >= playField.height - 1) {
+            if (yPos + 1 >= playField.height - 1 || playField.matrix[yPos + 1][xPos].type != 0) {
                 touchingFloor = true;
-                goto exitLoop;
-            }
-
-            if (playField.matrix[yPos + 1][xPos].type != 0) {
-                touchingFloor = true;
-                goto exitLoop;
+                return touchingFloor;
             }
         }
     }
 
-    exitLoop:
-        return touchingFloor;
+    return touchingFloor;
 }
 
 
@@ -812,20 +817,21 @@ Vector2 getFinalPos(Piece* activePiece, PlayField playField)
                 else {
                     finalPos = previousPos;
                     finalPos.y ++;
-                    goto exitFinalPosLoop;
+                    return finalPos;
                 }
             }
         }
     }
-    exitFinalPosLoop:
-        return finalPos;
+
+    return finalPos;
 }
 
 
 void checkIfAtBottom(Piece* activePiece, PlayField playField, SpeedSettings timings)
 {
-    if (TimerDone(appearanceDelayTimer) && !canMove(activePiece->position, activePiece, playField, 0, 1)) {
-
+    if (TimerDone(appearanceDelayTimer) &&
+        !canMove(activePiece->position, activePiece, playField, 0, 1))
+    {
         lockIfFloorKicked(activePiece, playField, timings);
         if (GetElapsed(pieceLockDelayTimer) == 0) {
             PlaySound(landSound);
@@ -839,7 +845,9 @@ void checkIfAtBottom(Piece* activePiece, PlayField playField, SpeedSettings timi
         }
 
     }
-    else if (TimerDone(appearanceDelayTimer) && canMove(activePiece->position, activePiece, playField, 0, 1)) {
+    else if (TimerDone(appearanceDelayTimer) &&
+             canMove(activePiece->position, activePiece, playField, 0, 1))
+    {
         resetTimer(&pieceLockDelayTimer);
     }
 
@@ -867,24 +875,21 @@ void lockIfFloorKicked(Piece* activePiece, PlayField playField, SpeedSettings ti
 
 void moveDown(Piece* activePiece, PlayField playField, SpeedSettings timings)
 {
-    if (framesToMilliseconds(1) / timings.tickSpeed <= 1) {
-        if (TimerDone(appearanceDelayTimer)) {
-            if (GetElapsed(tickTimer) == 0) {
-                startTimer(&tickTimer, timings.tickSpeed);
-            }
-            else if (TimerDone(tickTimer)){
-                startTimer(&tickTimer, timings.tickSpeed);
+    if (framesToMilliseconds(1) / timings.tickSpeed <= 1 &&
+        TimerDone(appearanceDelayTimer) &&
+        TimerDone(tickTimer))
+    {
+        startTimer(&tickTimer, timings.tickSpeed);
 
-                if (canMove(activePiece->position, activePiece, playField, 0, 1)) {
-                    activePiece->position.y += 1;
-                }
-                else {
-                    checkIfAtBottom(activePiece, playField, timings);
-                }
-            }
+        if (canMove(activePiece->position, activePiece, playField, 0, 1)) {
+            activePiece->position.y += 1;
+        }
+        else {
+            checkIfAtBottom(activePiece, playField, timings);
         }
     }
-    else if (TimerDone(appearanceDelayTimer) && !activePiece->locked) {
+    /* if gravity speed is faster than fps */
+    else if (TimerDone(appearanceDelayTimer) && TimerDone(tickTimer) && !activePiece->locked) {
         int rows = framesToMilliseconds(1) / timings.tickSpeed;
         while (rows > 0) {
             if (canMove(activePiece->position, activePiece, playField, 0, 1)) {
@@ -902,22 +907,27 @@ void moveDown(Piece* activePiece, PlayField playField, SpeedSettings timings)
 
 void softDrop(Piece* activePiece, PlayField playField, SpeedSettings* timings)
 {
-    if (TimerDone(keyRepeatRateTimer)) {
-        if (canMove(activePiece->position, activePiece, playField, 0, 1)) {
-            timings->linesSoftDropped += 1;
-            activePiece->position.y += 1;
-            startTimer(&keyRepeatRateTimer, timings->autoRepeatRate);
-        }
-        else if (rotationRule == CLASSIC) {
-            pieceLockDelayTimer.startTime = timings->lockDelay;
-        }
+    if (!TimerDone(keyRepeatRateTimer)) {
+        return;
+    }
+
+    if (canMove(activePiece->position, activePiece, playField, 0, 1)) {
+        timings->linesSoftDropped += 1;
+        activePiece->position.y += 1;
+        startTimer(&keyRepeatRateTimer, timings->autoRepeatRate);
+    }
+    else if (rotationRule == CLASSIC) {
+        pieceLockDelayTimer.startTime = timings->lockDelay;
     }
 }
 
 
 void movePiece(Piece* activePiece, PlayField playField, int dir, SpeedSettings timings)
 {
-    if (TimerDone(keyRepeatRateTimer) && TimerDone(keyRepeatDelayTimer) && canMove(activePiece->position, activePiece, playField, dir, 0)) {
+    if (TimerDone(keyRepeatRateTimer) &&
+        TimerDone(keyRepeatDelayTimer) &&
+        canMove(activePiece->position, activePiece, playField, dir, 0))
+    {
         activePiece->position.x += dir;
         startTimer(&keyRepeatRateTimer, timings.autoRepeatRate);
         PlaySound(moveSound);
@@ -928,7 +938,7 @@ void movePiece(Piece* activePiece, PlayField playField, int dir, SpeedSettings t
 }
 
 
-void moveResetDAS(Piece* activePiece, PlayField playField, int dir, SpeedSettings timings)
+void moveIgnoreDAS(Piece* activePiece, PlayField playField, int dir, SpeedSettings timings)
 {
     if (canMove(activePiece->position, activePiece, playField, dir, 0)) {
         activePiece->position.x += dir;
@@ -1031,40 +1041,35 @@ void processInput(Piece* activePiece, PlayField playField, SpeedSettings* timing
         return;
     }
 
-    if (IsKeyPressed(config.KeyBinds.ccw) || IsKeyPressed(config.KeyBinds.ccwAlt)) {
+    if (IsKeyPressed(config.KeyBinds.ccw) || IsKeyPressed(config.KeyBinds.ccwAlt))
         rotateLeft(activePiece, *timings, playField);
-    }
 
-    if (IsKeyPressed(config.KeyBinds.cw)) {
+    if (IsKeyPressed(config.KeyBinds.cw))
         rotateRight(activePiece, *timings, playField);
-    }
 
-    if (IsKeyPressed(config.KeyBinds.swapHold)) {
+    if (IsKeyPressed(config.KeyBinds.swapHold))
         holdSwap(activePiece, *timings, playField);
-    }
 
     if (IsKeyPressed(config.KeyBinds.right)) {
         resetTimer(&keyRepeatDelayTimer);
-        moveResetDAS(activePiece, playField, 1, *timings);
+        moveIgnoreDAS(activePiece, playField, 1, *timings);
         startTimer(&keyRepeatDelayTimer, timings->delayedAutoShift);
     }
     else if (IsKeyPressed(config.KeyBinds.left)) {
         resetTimer(&keyRepeatDelayTimer);
-        moveResetDAS(activePiece, playField, -1, *timings);
+        moveIgnoreDAS(activePiece, playField, -1, *timings);
         startTimer(&keyRepeatDelayTimer, timings->delayedAutoShift);
     }
     else if (IsKeyPressed(config.KeyBinds.down)) {
         canSoftDrop = true;
         softDrop(activePiece, playField, timings);
     }
-    else if (IsKeyPressed(config.KeyBinds.sonicDrop)) {
-        if (timings->sonicDropEnabled) {
-            activePiece->position = getFinalPos(activePiece, playField);
+    else if (IsKeyPressed(config.KeyBinds.sonicDrop) && timings->sonicDropEnabled) {
+        activePiece->position = getFinalPos(activePiece, playField);
 
-            // hard drop
-            if (rotationRule == WORLD)
-                pieceLockDelayTimer.startTime = timings->lockDelay;
-        }
+        // hard drop
+        if (rotationRule == WORLD)
+            pieceLockDelayTimer.startTime = timings->lockDelay;
     }
 
     if (IsKeyDown(config.KeyBinds.right))
