@@ -93,7 +93,7 @@ void updateLevel(void);
 
 int main(void) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "tuxmino v0.1");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "tuxmino v1.0.0");
     SetExitKey(KEY_NULL);
     InitAudioDevice();
 
