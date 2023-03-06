@@ -57,10 +57,6 @@ end
 --[ This Function gets called every time a piece lands --]
 function advanceLevel(amount, lineCount)
 
-    -- timings->score += (((*getLevel() + lines) / 4) + timings->linesSoftDropped) * lines * timings->prevComboScore;
-    -- timings->linesSoftDropped = 0;
-
-
     -- advance getLevel() if not on a level stop
     if ((getLevel() % 100 ~= 99 and getLevel() ~= 998) or lineCount ~= 0) then
         setLevel(amount + getLevel() + lineCount)
