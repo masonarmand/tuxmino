@@ -1,5 +1,9 @@
 # Todo
 
+## General
+- Update compilation instructions & update CmakeLists
+- Finish tutorial and documentation on the website
+
 ## Engine
 - TI bag generator
 - 7 Bag generator
