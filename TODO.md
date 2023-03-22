@@ -11,6 +11,15 @@
 - Animated backgrounds
 - Options Menu
 
+## Official Gamemodes
+- Finish master1 backgrounds.
+    - lvl 500
+    - lvl 600
+    - lvl 700
+- Add grand master requirements to master1
+- Add grading and torikans to death
+- Add grading and torikans to instinct
+
 ## LUA Gamemode features
 - Custom gamemode menu options
 - Gamemode description
