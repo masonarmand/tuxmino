@@ -252,7 +252,7 @@ void update(void) {
             inGameModeSettings = true;
         }
 
-        if (IsKeyReleased(config.KeyBinds.uiSelect) && gameOver) {
+        if (IsKeyReleased(config.keyBinds.uiSelect) && gameOver) {
             resetGame();
         }
 
@@ -346,14 +346,14 @@ void update(void) {
             processMenuInput(&idxGameModeSettingOption, 2);
 
             // level select
-            if (IsKeyPressed(config.KeyBinds.right) && idxGameModeSettingOption == 0) {
+            if (IsKeyPressed(config.keyBinds.right) && idxGameModeSettingOption == 0) {
                 gameModes.modes[modeId].level += 100;
                 if (gameModes.modes[modeId].level > gameModes.modes[modeId].maxLevel) {
                     gameModes.modes[modeId].level = 0;
                 }
                 gameModeLvl(0, 0, &gameModes.modes[modeId]);
             }
-            else if (IsKeyPressed(config.KeyBinds.left) && idxGameModeSettingOption == 0) {
+            else if (IsKeyPressed(config.keyBinds.left) && idxGameModeSettingOption == 0) {
                 if (gameModes.modes[modeId].level == 0) {
                     gameModes.modes[modeId].level = gameModes.modes[modeId].maxLevel;
                 }
@@ -364,7 +364,7 @@ void update(void) {
             }
 
             // rotation rule select
-            if ((IsKeyPressed(config.KeyBinds.right) || IsKeyPressed(config.KeyBinds.left)) && idxGameModeSettingOption == 1) {
+            if ((IsKeyPressed(config.keyBinds.right) || IsKeyPressed(config.keyBinds.left)) && idxGameModeSettingOption == 1) {
                 if (rotationRule == WORLD) {
                     setRotationRule(0);
                     blockTileset = classicTileset;
@@ -377,7 +377,7 @@ void update(void) {
             }
 
             // big mode toggle
-            if ((IsKeyPressed(config.KeyBinds.right) || IsKeyPressed(config.KeyBinds.left)) && idxGameModeSettingOption == 2) {
+            if ((IsKeyPressed(config.keyBinds.right) || IsKeyPressed(config.keyBinds.left)) && idxGameModeSettingOption == 2) {
                 rule.bigMode = !rule.bigMode;
                 //TODO
                 if (rule.bigMode) {
@@ -386,7 +386,7 @@ void update(void) {
                 }
             }
 
-            if (IsKeyPressed(config.KeyBinds.uiSelect)) {
+            if (IsKeyPressed(config.keyBinds.uiSelect)) {
                 PlaySound(lineClearSound);
                 inGameModeSettings = false;
                 startTimer(&delayStartTimer, startCountDown);

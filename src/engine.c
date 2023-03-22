@@ -367,7 +367,7 @@ void spawnQueuedPiece(Piece* activePiece, PlayField playField, SpeedSettings tim
     updatePreview(timings);
 
     // pre hold
-    if (IsKeyDown(config.KeyBinds.swapHold)) {
+    if (IsKeyDown(config.keyBinds.swapHold)) {
         holdSwap(activePiece, timings, playField);
     }
 
@@ -376,14 +376,14 @@ void spawnQueuedPiece(Piece* activePiece, PlayField playField, SpeedSettings tim
 
     int idx = activePiece->pieceIndex;
     // Pre rotation
-    if ((IsKeyDown(config.KeyBinds.ccw) ||
-         IsKeyDown(config.KeyBinds.ccwAlt)) &&
+    if ((IsKeyDown(config.keyBinds.ccw) ||
+         IsKeyDown(config.keyBinds.ccwAlt)) &&
          isValidRotation(pieces[idx][3], *activePiece, playField))
     {
         activePiece->rotIndex = 3;
         PlaySound(preRotateSound);
     }
-    else if (IsKeyDown(config.KeyBinds.cw) &&
+    else if (IsKeyDown(config.keyBinds.cw) &&
              isValidRotation(pieces[idx][1], *activePiece, playField))
     {
         activePiece->rotIndex = 1;
@@ -1041,30 +1041,30 @@ void processInput(Piece* activePiece, PlayField playField, SpeedSettings* timing
         return;
     }
 
-    if (IsKeyPressed(config.KeyBinds.ccw) || IsKeyPressed(config.KeyBinds.ccwAlt))
+    if (IsKeyPressed(config.keyBinds.ccw) || IsKeyPressed(config.keyBinds.ccwAlt))
         rotateLeft(activePiece, *timings, playField);
 
-    if (IsKeyPressed(config.KeyBinds.cw))
+    if (IsKeyPressed(config.keyBinds.cw))
         rotateRight(activePiece, *timings, playField);
 
-    if (IsKeyPressed(config.KeyBinds.swapHold))
+    if (IsKeyPressed(config.keyBinds.swapHold))
         holdSwap(activePiece, *timings, playField);
 
-    if (IsKeyPressed(config.KeyBinds.right)) {
+    if (IsKeyPressed(config.keyBinds.right)) {
         resetTimer(&keyRepeatDelayTimer);
         moveIgnoreDAS(activePiece, playField, 1, *timings);
         startTimer(&keyRepeatDelayTimer, timings->delayedAutoShift);
     }
-    else if (IsKeyPressed(config.KeyBinds.left)) {
+    else if (IsKeyPressed(config.keyBinds.left)) {
         resetTimer(&keyRepeatDelayTimer);
         moveIgnoreDAS(activePiece, playField, -1, *timings);
         startTimer(&keyRepeatDelayTimer, timings->delayedAutoShift);
     }
-    else if (IsKeyPressed(config.KeyBinds.down)) {
+    else if (IsKeyPressed(config.keyBinds.down)) {
         canSoftDrop = true;
         softDrop(activePiece, playField, timings);
     }
-    else if (IsKeyPressed(config.KeyBinds.sonicDrop) && timings->sonicDropEnabled) {
+    else if (IsKeyPressed(config.keyBinds.sonicDrop) && timings->sonicDropEnabled) {
         activePiece->position = getFinalPos(activePiece, playField);
 
         // hard drop
@@ -1072,13 +1072,13 @@ void processInput(Piece* activePiece, PlayField playField, SpeedSettings* timing
             pieceLockDelayTimer.startTime = timings->lockDelay;
     }
 
-    if (IsKeyDown(config.KeyBinds.right))
+    if (IsKeyDown(config.keyBinds.right))
         movePiece(activePiece, playField, 1, *timings);
 
-    else if (IsKeyDown(config.KeyBinds.left))
+    else if (IsKeyDown(config.keyBinds.left))
         movePiece(activePiece, playField, -1, *timings);
 
-    else if (IsKeyDown(config.KeyBinds.down) && canSoftDrop)
+    else if (IsKeyDown(config.keyBinds.down) && canSoftDrop)
         softDrop(activePiece, playField, timings);
 }
 
@@ -1087,7 +1087,7 @@ bool processMenuInput(unsigned int* menuIndex, unsigned int max)
 {
     bool gameEntered = false;
 
-    if (IsKeyPressed(config.KeyBinds.up)) {
+    if (IsKeyPressed(config.keyBinds.up)) {
         PlaySound(selectSound);
         if (*menuIndex == 0) {
             *menuIndex = max - 1;
@@ -1097,7 +1097,7 @@ bool processMenuInput(unsigned int* menuIndex, unsigned int max)
         }
     }
 
-    if (IsKeyPressed(config.KeyBinds.down)) {
+    if (IsKeyPressed(config.keyBinds.down)) {
         PlaySound(selectSound);
         if (*menuIndex == max - 1) {
             *menuIndex = 0;
@@ -1107,7 +1107,7 @@ bool processMenuInput(unsigned int* menuIndex, unsigned int max)
         }
     }
 
-    if (IsKeyPressed(config.KeyBinds.uiSelect)) {
+    if (IsKeyPressed(config.keyBinds.uiSelect)) {
         gameEntered = true;
         PlaySound(lineClearSound);
     }

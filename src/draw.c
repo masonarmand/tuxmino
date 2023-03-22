@@ -109,34 +109,34 @@ void drawKeyPresses(int screenWidth, int ScreenHeight)
     Color holdColor = buttonDefaultColor;
     Color joyStickColor = buttonDefaultColor;
 
-    if (IsKeyDown(config.KeyBinds.up)) {
+    if (IsKeyDown(config.keyBinds.up)) {
         balltopPos.y = joystickPos.y - 20;
         joyStickColor = MAROON;
     }
-    else if (IsKeyDown(config.KeyBinds.down)) {
+    else if (IsKeyDown(config.keyBinds.down)) {
         balltopPos.y = joystickPos.y + 20;
         joyStickColor = MAROON;
     }
 
-    if (IsKeyDown(config.KeyBinds.left)) {
+    if (IsKeyDown(config.keyBinds.left)) {
         balltopPos.x = joystickPos.x - 20;
         joyStickColor = MAROON;
     }
-    else if (IsKeyDown(config.KeyBinds.right)) {
+    else if (IsKeyDown(config.keyBinds.right)) {
         balltopPos.x = joystickPos.x + 20;
         joyStickColor = MAROON;
     }
 
-    if (IsKeyDown(config.KeyBinds.ccw))
+    if (IsKeyDown(config.keyBinds.ccw))
         leftRotateColor = MAROON;
 
-    if (IsKeyDown(config.KeyBinds.ccwAlt))
+    if (IsKeyDown(config.keyBinds.ccwAlt))
         leftRotateAltColor = MAROON;
 
-    if (IsKeyDown(config.KeyBinds.cw))
+    if (IsKeyDown(config.keyBinds.cw))
         rightRotateColor = MAROON;
 
-    if (IsKeyDown(config.KeyBinds.swapHold))
+    if (IsKeyDown(config.keyBinds.swapHold))
         holdColor = MAROON;
 
     DrawCircle(screenWidth - 20, ScreenHeight, 100, (Color){0, 0, 10, 255});

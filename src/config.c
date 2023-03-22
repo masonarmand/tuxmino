@@ -25,34 +25,34 @@ int handler(void* configuration, const char* section, const char* name, const ch
     }
     /* Keybinds */
     else if (MATCH("Keybinds", "counter-clockwise")) {
-        pconfig->KeyBinds.ccw = atoi(value);
+        pconfig->keyBinds.ccw = atoi(value);
     }
     else if (MATCH("Keybinds", "counter-clockwise-alt")) {
-        pconfig->KeyBinds.ccwAlt = atoi(value);
+        pconfig->keyBinds.ccwAlt = atoi(value);
     }
     else if (MATCH("Keybinds", "clockwise")) {
-        pconfig->KeyBinds.cw = atoi(value);
+        pconfig->keyBinds.cw = atoi(value);
     }
     else if (MATCH("Keybinds", "swap-hold")) {
-        pconfig->KeyBinds.swapHold = atoi(value);
+        pconfig->keyBinds.swapHold = atoi(value);
     }
     else if (MATCH("Keybinds", "sonic-drop")) {
-        pconfig->KeyBinds.sonicDrop = atoi(value);
+        pconfig->keyBinds.sonicDrop = atoi(value);
     }
     else if (MATCH("Keybinds", "move-left")) {
-        pconfig->KeyBinds.left = atoi(value);
+        pconfig->keyBinds.left = atoi(value);
     }
     else if (MATCH("Keybinds", "move-right")) {
-        pconfig->KeyBinds.right = atoi(value);
+        pconfig->keyBinds.right = atoi(value);
     }
     else if (MATCH("Keybinds", "move-down")) {
-        pconfig->KeyBinds.down = atoi(value);
+        pconfig->keyBinds.down = atoi(value);
     }
     else if (MATCH("Keybinds", "move-up")) {
-        pconfig->KeyBinds.up = atoi(value);
+        pconfig->keyBinds.up = atoi(value);
     }
     else if (MATCH("Keybinds", "ui-select")) {
-        pconfig->KeyBinds.uiSelect = atoi(value);
+        pconfig->keyBinds.uiSelect = atoi(value);
     }
     else {
         return 0;
