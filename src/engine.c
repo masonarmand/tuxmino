@@ -744,6 +744,24 @@ void performWallKick(Piece* activePiece, SpeedSettings rule, PlayField playField
 
             }
         }
+
+        /* T kicks (if enabled) */
+        if (rule.extraKicks && activePiece->pieceIndex == 1) {
+            /* kick up */
+            activePiece->position.y -= 1;
+
+            if (isValidRotation(pieces[activePiece->pieceIndex][rotation], *activePiece, playField)) {
+                activePiece->rotIndex = rotation;
+
+                if (floorKicked)
+                    rotatedAfterKick = true;
+
+                floorKicked = true;
+            }
+            else {
+                activePiece->position.y += 1;
+            }
+        }
     }
 
     // World rule kicks (srs)
