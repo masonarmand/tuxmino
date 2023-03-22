@@ -84,8 +84,7 @@ void freeGameMode(GameMode* mode)
 void appendGameMode(GameModeList* list, GameMode mode)
 {
     int newSize = list->length + 1;
-    GameMode* newAddr =
-        (GameMode*) realloc(list->modes, (newSize * sizeof(GameMode)));
+    GameMode* newAddr = (GameMode*) realloc(list->modes, (newSize * sizeof(GameMode)));
 
     if (newAddr == NULL) {
         printf("ERROR: Unable to realloc memory for game modes array\n");
@@ -319,7 +318,11 @@ static int setBackground(lua_State* lua)
         mode->background = mode->bgList.textures[idx];
     }
     else {
-        printf("LUA: [ERROR] Invalid set index on background. BackgroundList is of size %d, index was %d\n", mode->bgList.length, idx);
+        printf(
+            "LUA: [ERROR] Invalid set index on background. \
+            BackgroundList is of size %d, index was %d\n",
+            mode->bgList.length, idx
+        );
     }
     return 0;
 }
