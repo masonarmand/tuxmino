@@ -458,8 +458,6 @@ void drawLineClearEffect(Texture2D explosionTileset, PlayField playField, int cu
         float blockPosX = playField.pos.x + (i * cellSize);
         float blockPosY = playField.pos.y + (row * cellSize);
 
-        int randRot = GetRandomValue(0, 10);
-
         Rectangle dest = {blockPosX, blockPosY, size * scale, size * scale};
         Vector2 origin = { center * scale, (yOrigin * scale) };
 
@@ -473,7 +471,7 @@ void drawLineClearEffect(Texture2D explosionTileset, PlayField playField, int cu
             case 7: explosionColor = ORANGE; break;
         }
 
-        DrawTexturePro(explosionTileset, frameRec, dest, origin, randRot, explosionColor);
+        DrawTexturePro(explosionTileset, frameRec, dest, origin, 0.0f, explosionColor);
     }
 }
 
