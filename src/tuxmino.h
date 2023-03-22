@@ -55,7 +55,7 @@ typedef struct {
 
 typedef struct {
     Settings settings;
-    KeyBinds KeyBinds;
+    KeyBinds keyBinds;
 } Config;
 
 
