@@ -7,7 +7,7 @@
  * Original Author: Mason Armand
  * Contributors: Dawnvoid
  * Date Created: Sep 14, 2022
- * Last Modified: Mar 4, 2023
+ * Last Modified: Mar 21, 2023
  */
 
 #include "tuxmino.h"
@@ -304,7 +304,7 @@ void drawGradeEx(Texture2D gradeTexture, int grade, Vector2 gradePos)
 
     DrawTextureRec(
         gradeTexture,
-        (Rectangle) { tilesetX * 96, tilesetY * 96, 96, 96},
+        (Rectangle) { tilesetX * 96, tilesetY * 96, 96, 96 },
         gradePos,
         WHITE
     );
