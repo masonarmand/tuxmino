@@ -4,7 +4,7 @@
 Highly moddable free open source falling block puzzle game. Written in C using the
 [raylib](https://github.com/raysan5/raylib) game library.
 
-For documentation, tutorials, etc visit [tuxmino.org](https://tuxmino.org).
+For documentation, tutorials, info on contributing, etc visit [tuxmino.org](https://tuxmino.org).
 
 ## Features
 - Lua support for making your own custom game modes.
