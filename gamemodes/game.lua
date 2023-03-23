@@ -43,6 +43,9 @@ end
 function update()
 end
 
+function reset()
+end
+
 function advanceLevel(amount, lineCount)
 
     -- Calculate Score
