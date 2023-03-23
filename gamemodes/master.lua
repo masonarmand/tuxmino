@@ -7,6 +7,9 @@
 --
 --]
 
+grandMasterReqs = { lvl300 = false, lvl500 = false, lvl999 = false }
+
+
 --[ This Function gets called once upon selecting the game mode --]
 function start()
     -- Initialization and backgrounds
@@ -50,13 +53,18 @@ function start()
     setNextScore(400)
 end
 
+function reset()
+    grandMasterReqs["lvl300"] = false
+    grandMasterReqs["lvl500"] = false
+    grandMasterReqs["lvl999"] = false
+end
+
 --[ This Function gets called every frame --]
 function update()
 end
 
 --[ This Function gets called every time a piece lands --]
 function advanceLevel(amount, lineCount)
-
     -- advance getLevel() if not on a level stop
     if ((getLevel() % 100 ~= 99 and getLevel() ~= 998) or lineCount ~= 0) then
         setLevel(amount + getLevel() + lineCount)
@@ -73,6 +81,19 @@ function advanceLevel(amount, lineCount)
         setSectionLevel(999)
     else
         setSectionLevel(math.floor(getLevel() / 100 + 1) * 100)
+    end
+
+
+    if (getElapsedTime() <= 255 and getLevel() >= 300) then
+       grandMasterReqs["lvl300"] = true
+    end
+
+    if (getElapsedTime() <= 450 and getLevel() >= 500) then
+       grandMasterReqs["lvl500"] = true
+    end
+
+    if (getElapsedTime() <= 810 and getLevel() >= 999) then
+       grandMasterReqs["lvl999"] = true
     end
 
     -- Set gravity based on getLevel()
@@ -127,6 +148,15 @@ function advanceLevel(amount, lineCount)
 	elseif getScore() < 100000 then setGrade(15); setNextScore(100000)
 	elseif getScore() < 120000 then setGrade(16); setNextScore(120000)
 	else setGrade(17)
+    end
+
+    if grandMasterReqs["lvl300"] == true and
+       grandMasterReqs["lvl500"] == true and
+       grandMasterReqs["lvl999"] == true and
+       getScore() >= 126000              and
+       getLevel() >= 999
+    then
+        setGrade(18) --Grand Master
     end
 
     if (getLevel() >= 999) then

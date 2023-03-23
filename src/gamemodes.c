@@ -201,8 +201,17 @@ void resetGameMode(GameMode* mode)
     mode->level = 0;
     mode->rule.score = 0;
     mode->rule.creditRoll = false;
+    mode->rule.grade = 0;
+    mode->gameTimer.paused = false;
+    mode->gameTimer.pauseTime = 0;
+    resetGameTimer(&mode->gameTimer);
     resetTimer(&mode->rule.creditRollTimer);
     gameModeLvl(0, 0, mode);
+
+    lua_getglobal(mode->interpreter, "reset");
+    if (lua_pcall(mode->interpreter, 0, 0, 0) != 0) {
+        printf("LUA: [ERROR] reset(): %s\n", lua_tostring(mode->interpreter, -1));
+    }
 }
 
 
