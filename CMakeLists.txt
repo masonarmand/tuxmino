@@ -1,4 +1,7 @@
-#
+# file: CMakeLists.txt
+# Author: dawnvoid (https://github.com/dawnvoid)
+# Contributors:
+#   - Mason Armand: Added lua library
 # To build:
 # mkdir ./build
 # cd build
@@ -9,7 +12,7 @@
 # cmake .. -G "MinGW Makefiles"
 # instead of
 # cmake ..
-# to force cmake to use MinGW's gcc instead of whatever default shit it uses.
+# to force cmake to use MinGW's gcc instead of whatever default stuff it uses.
 # If you get an error about not being able to find/open raylib.lib, this is probably why.
 #
 # Also, you will need to copy the res/folder to the same directory as the executable.
@@ -25,26 +28,38 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 
 # Add an executable to project as a compilation target
 add_executable(tuxmino
+    src/config.c
     src/draw.c
+    src/gamemodes.c
+    src/replay.c
+    src/timings.c
+    src/credits.c
     src/engine.c
     src/main.c
     src/piece.c
     src/timer.c
+    src/ini.c
 )
 
 target_include_directories(tuxmino PUBLIC
     ${PROJECT_BINARY_DIR}
     include/
+    ./dependencies/lua/
 )
 
 target_link_directories(tuxmino PUBLIC
     lib/
 )
 
-# Compile raylib if needed. Basically, just call the CMakeLists.txt file that raylib comes with, but output the files one directory higher (in tuxmino/dependencies/raylib/). Pretty sure CMake actually moves everything to tuxmino/build/ which is even cleaner. CMake also seems to handle target_link_libraries(raylib) directly.
+# Compile raylib if needed. Basically, just call the CMakeLists.txt file that raylib comes with,
+# but output the files one directory higher (in tuxmino/dependencies/raylib/). Pretty sure CMake
+# actually moves everything to tuxmino/build/ which is even cleaner. CMake also seems to handle
+# target_link_libraries(raylib) directly.
 add_subdirectory(./dependencies/raylib/raylib-4.2.0/ ./dependencies/raylib)
+add_subdirectory(./dependencies/lua)
 target_link_libraries(tuxmino PRIVATE
     raylib
+    lua::lib
 )
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
