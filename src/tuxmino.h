@@ -165,6 +165,8 @@ typedef struct {
     unsigned int sectionLevel;
     unsigned int maxLevel;
 
+    GameTimer gameTimer;
+
     lua_State* interpreter;
 } GameMode;
 

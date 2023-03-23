@@ -58,7 +58,7 @@ static Piece activePiece;
 static Timer delayStartTimer;
 static Timer lineClearEffectFrameTime;
 static Timer lockFadeTime;
-static GameTimer gameTimer;
+//static GameTimer gameTimer;
 
 static unsigned int modeId = 0;
 static unsigned int idxPauseOption = 0;
@@ -234,7 +234,7 @@ void update(void) {
         if (IsKeyPressed(KEY_ESCAPE) && !inMenu && !inGameModeSettings && !gameOver) {
             idxPauseOption = 0;
             pause = !pause;
-            togglePauseGameTimer(&gameTimer);
+            togglePauseGameTimer(&gameModes.modes[modeId].gameTimer);
         }
         else if (IsKeyPressed(KEY_ESCAPE) && inMenu) {
             currentScreen = TITLE;
@@ -404,7 +404,7 @@ void update(void) {
             if (isSelected) {
                 if (idxPauseOption == 0) {
                     pause = false;
-                    togglePauseGameTimer(&gameTimer);
+                    togglePauseGameTimer(&gameModes.modes[modeId].gameTimer);
                 }
                 else if (idxPauseOption == 1) {
                     resetGame();
@@ -500,7 +500,7 @@ void render(void) {
             drawScore(rule, playField);
             drawLevelCount(rule, playField, gameModes.modes[modeId]);
             drawNextGrade(rule, playField);
-            drawGameTimer(gameTimer, playField);
+            drawGameTimer(gameModes.modes[modeId].gameTimer, playField);
             drawKeyPresses(SCREEN_WIDTH, SCREEN_HEIGHT);
 
             if (lineClearEffect) {
@@ -583,8 +583,8 @@ static void cleanUp(void)
 void updateLevel(void)
 {
     bool gameStarted = (TimerDone(delayStartTimer) && !inMenu && !inGameModeSettings);
-    if (GetGameTimerElapsed(gameTimer) == 0 && gameStarted) {
-        startGameTimer(&gameTimer);
+    if (GetGameTimerElapsed(gameModes.modes[modeId].gameTimer) == 0 && gameStarted) {
+        startGameTimer(&gameModes.modes[modeId].gameTimer);
     }
     gameModeUpdate(&gameModes.modes[modeId]);
 }
@@ -597,21 +597,21 @@ void advanceLevel(int lineCount)
 void declareGameOver(void)
 {
     gameOver = true;
-    togglePauseGameTimer(&gameTimer);
+    togglePauseGameTimer(&gameModes.modes[modeId].gameTimer);
 }
 
 void resetGame(void)
 {
     resetGameMode(&gameModes.modes[modeId]);
-    resetGameTimer(&gameTimer);
+    resetGameTimer(&gameModes.modes[modeId].gameTimer);
     heldPiece = -1;
     inMenu = true;
     inCreditRoll = false;
     pause = false;
     gameOver = false;
-    gameTimer.paused = false;
-    gameTimer.pauseTime = 0;
-    resetGameTimer(&gameTimer);
+    gameModes.modes[modeId].gameTimer.paused = false;
+    gameModes.modes[modeId].gameTimer.pauseTime = 0;
+    resetGameTimer(&gameModes.modes[modeId].gameTimer);
     resetGameOverAnim();
     generateInitialPreview(&activePiece, playField, gameModes.modes[modeId].rule);
     for (unsigned int y = 0; y < playField.height; y++) {

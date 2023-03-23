@@ -64,6 +64,7 @@ static int setSoftFrames(lua_State* lua);
 static int getSoftFrames(lua_State* lua);
 static int setClearOnCredits(lua_State* lua);
 static int setBoneBlocks(lua_State* lua);
+static int getElapsedTime(lua_State* lua);
 
 
 void freeBackgroundList(BackgroundList* bgList)
@@ -142,6 +143,8 @@ void initMode(GameMode* mode)
             "LUA: successfully called start(). lua stack height is now %d\n",
             lua_gettop(mode->interpreter)
         );
+
+        resetGameTimer(&mode->gameTimer);
     }
     else {
         printf(
@@ -272,6 +275,7 @@ void registerLuaFunctions(lua_State* lua)
     lua_register(lua, "setPlayfieldColor", setPlayfieldColor);
     lua_register(lua, "setClearOnCredits", setClearOnCredits);
     lua_register(lua, "setBoneBlocks", setBoneBlocks);
+    lua_register(lua, "getElapsedTime", getElapsedTime);
 }
 
 
@@ -765,5 +769,15 @@ static int setBoneBlocks(lua_State* lua)
     GameMode* mode = (GameMode*) lua_touserdata(lua, -1);
 
     mode->boneBlocks = (bool) lua_toboolean(lua, 1);
+    return 1;
+}
+
+
+static int getElapsedTime(lua_State* lua)
+{
+    lua_getglobal(lua, "mode");
+    GameMode* mode = (GameMode*) lua_touserdata(lua, -1);
+
+    lua_pushnumber(lua, GetGameTimerElapsed(mode->gameTimer));
     return 1;
 }
