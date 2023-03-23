@@ -107,7 +107,6 @@ int main(void) {
 
     SetWindowIcon(LoadImage("res/ui/logo.png"));
     start();
-    initRecording();
     // main game loop
     while (!WindowShouldClose() && !shouldQuit) {
         //recordInputs();
@@ -538,7 +537,6 @@ void render(void) {
 
 static void cleanUp(void)
 {
-    exitRecording();
     unloadPlayField(playField);
 
     /* Unload Game Modes */
@@ -603,15 +601,11 @@ void declareGameOver(void)
 void resetGame(void)
 {
     resetGameMode(&gameModes.modes[modeId]);
-    resetGameTimer(&gameModes.modes[modeId].gameTimer);
     heldPiece = -1;
     inMenu = true;
     inCreditRoll = false;
     pause = false;
     gameOver = false;
-    gameModes.modes[modeId].gameTimer.paused = false;
-    gameModes.modes[modeId].gameTimer.pauseTime = 0;
-    resetGameTimer(&gameModes.modes[modeId].gameTimer);
     resetGameOverAnim();
     generateInitialPreview(&activePiece, playField, gameModes.modes[modeId].rule);
     for (unsigned int y = 0; y < playField.height; y++) {
