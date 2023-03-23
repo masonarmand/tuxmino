@@ -813,6 +813,11 @@ void drawMenu(int selectedGameType, GameModeList gameModes, PlayField playField)
             DrawText(bottomName, posX, startPosY + menuSpacing, 50, nonSelectedColor);
             DrawText(selectedName, posX, startPosY, 50, WHITE);
         break;
+		case 2:
+			DrawText(topName, posX, startPosY - menuSpacing, 50, nonSelectedColor);
+            DrawText(bottomName, posX, startPosY + menuSpacing, 50, nonSelectedColor);
+            DrawText(selectedName, posX, startPosY, 50, WHITE);
+		break;
         default:
             DrawText(behindName, posX, startPosY, 50, nonSelectedColor);
             DrawText(topName, posX, startPosY - menuSpacing, 50, nonSelectedColor);
