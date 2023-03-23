@@ -1,4 +1,4 @@
-<img src='https://raw.githubusercontent.com/masonarmand/tuxmino/v1/screenshots/tuxmino-gameplay.webp'>
+<img src='https://raw.githubusercontent.com/masonarmand/tuxmino/main/screenshots/tuxmino-gameplay.webp'>
 
 # tuxmino
 Highly moddable free open source falling block puzzle game. Written in C using the
