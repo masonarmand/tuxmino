@@ -1,5 +1,6 @@
 # Ignore stuff that doesn't need to be pushed to GitHub
 build/*
+gamemodes/*
 makefile
 gdbinit
 config.ini
