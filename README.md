@@ -20,7 +20,6 @@ View the [todo list](TODO.md).
 ## Compiling
 
 Please make sure the required dependencies are met:
-- lua5.4
 - [raylib dependencies linux](https://github.com/raysan5/raylib/wiki/Working-on-GNU-Linux)
 
 ### Compiling on Windows using CMake
