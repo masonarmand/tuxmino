@@ -972,8 +972,7 @@ void drawGameTimer(GameTimer timer, PlayField playField)
     char msText[4];
 
     sprintf(msText, "%02i", ms);
-    msText[2] = ' ';
-    msText[3] = ' ';
+    msText[2] = '\0';
 
     DrawText(
         TextFormat("%02i:%02i:%02s", minutes, seconds, msText),
