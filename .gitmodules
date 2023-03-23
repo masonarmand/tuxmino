@@ -1,0 +1,3 @@
+[submodule "dependencies/external/lua"]
+	path = dependencies/external/lua
+	url = https://github.com/lubgr/lua-cmake

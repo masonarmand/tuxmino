@@ -22,8 +22,6 @@ cmake_minimum_required(VERSION 3.10)
 # Set the project name and version
 project(TUXMINO VERSION 0.1)
 
-find_package(Lua 5.4 REQUIRED)
-
 # Specify C standard
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
@@ -46,6 +44,7 @@ add_executable(tuxmino
 target_include_directories(tuxmino PUBLIC
     ${PROJECT_BINARY_DIR}
     include/
+    ./dependencies/external/lua/
 )
 
 target_link_directories(tuxmino PUBLIC
@@ -57,9 +56,10 @@ target_link_directories(tuxmino PUBLIC
 # actually moves everything to tuxmino/build/ which is even cleaner. CMake also seems to handle
 # target_link_libraries(raylib) directly.
 add_subdirectory(./dependencies/raylib/raylib-4.2.0/ ./dependencies/raylib)
+add_subdirectory(./dependencies/external/lua)
 target_link_libraries(tuxmino PRIVATE
     raylib
-    ${LUA_LIBRARIES}
+    lua::lib
 )
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -69,7 +69,6 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         pthread
     )
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    include_directories(/usr/local/include ${LUA_INCLUDE_DIR})
     target_link_libraries(tuxmino PRIVATE
         opengl32
         gdi32
