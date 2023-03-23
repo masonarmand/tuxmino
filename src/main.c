@@ -527,10 +527,10 @@ void render(void) {
 
 
         DrawTexturePro(
-                screenTexture.texture,
-                (Rectangle){0, 0, screenTexture.texture.width, -screenTexture.texture.height},
-                (Rectangle){centerWidth, centerHeight, drawWidth, drawHeight},
-                (Vector2){0,0}, 0, WHITE
+            screenTexture.texture,
+            (Rectangle){0, 0, screenTexture.texture.width, -screenTexture.texture.height},
+            (Rectangle){centerWidth, centerHeight, drawWidth, drawHeight},
+            (Vector2){0,0}, 0, WHITE
         );
     EndDrawing();
 }
