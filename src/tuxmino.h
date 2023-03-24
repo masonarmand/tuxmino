@@ -51,6 +51,8 @@ typedef struct {
     int down;
     int up;
     int uiSelect;
+    int restart;
+    int screenshot;
 } KeyBinds;
 
 typedef struct {

@@ -239,13 +239,13 @@ void update(void) {
             currentScreen = TITLE;
         }
 
-        if (IsKeyPressed(KEY_S)) {
+        if (IsKeyPressed(config.keyBinds.screenshot)) {
             time_t t = time(NULL);
             struct tm tm = *localtime(&t);
             TakeScreenshot(TextFormat("screenshots/%d-%02d-%02d_%02d-%02d-%02d.png", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec));
         }
 
-        if (IsKeyPressed(KEY_R)) {
+        if (IsKeyPressed(config.keyBinds.restart)) {
             resetGame();
             inMenu = false;
             inGameModeSettings = true;

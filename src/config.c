@@ -54,6 +54,12 @@ int handler(void* configuration, const char* section, const char* name, const ch
     else if (MATCH("Keybinds", "ui-select")) {
         pconfig->keyBinds.uiSelect = atoi(value);
     }
+    else if (MATCH("Keybinds", "restart")) {
+        pconfig->keyBinds.restart = atoi(value);
+    }
+    else if (MATCH("Keybinds", "screenshot")) {
+        pconfig->keyBinds.screenshot = atoi(value);
+    }
     else {
         return 0;
     }
