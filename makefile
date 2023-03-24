@@ -33,8 +33,7 @@ SOURCES = ./src/*.c
 all: tuxmino debug clean
 
 tuxmino:
-	#$(CC) -g $(SOURCES) $(CFLAGS) $(WARNINGS) -o tuxmino
-	$(CC) -g $(SOURCES) $(CFLAGS) -o tuxmino
+	$(CC) -g $(SOURCES) $(CFLAGS) $(WARNINGS) -o tuxmino
 
 run:
 	./tuxmino
