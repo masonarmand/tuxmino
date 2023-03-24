@@ -143,8 +143,6 @@ void initMode(GameMode* mode)
             "LUA: successfully called start(). lua stack height is now %d\n",
             lua_gettop(mode->interpreter)
         );
-
-        resetGameTimer(&mode->gameTimer);
     }
     else {
         printf(
@@ -153,6 +151,8 @@ void initMode(GameMode* mode)
             lua_tostring(mode->interpreter, -1)
         );
     }
+
+    resetGameMode(mode);
 }
 
 

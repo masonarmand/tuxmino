@@ -967,15 +967,11 @@ void drawGameTimer(GameTimer timer, PlayField playField)
     float width = MeasureText("00:00:00", 40);
     int minutes = time / 60;
     int seconds = (int)time % 60;
-    int ms = ((int)(time * 1000) % 1000);
+    int cs = ((int)(time * 100) % 100);
 
-    char msText[4];
-
-    sprintf(msText, "%02i", ms);
-    msText[2] = '\0';
 
     DrawText(
-        TextFormat("%02i:%02i:%02s", minutes, seconds, msText),
+        TextFormat("%02i:%02i:%02i", minutes, seconds, cs),
         playField.pos.x + ((cellSize * playField.width) / 2) - (width / 2),
         playField.pos.y + (playField.height*cellSize) + FRAME_SIZE, 40, WHITE
     );
