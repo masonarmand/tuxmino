@@ -85,7 +85,7 @@ void freeGameMode(GameMode* mode)
 void appendGameMode(GameModeList* list, GameMode mode)
 {
     int newSize = list->length + 1;
-    GameMode* newAddr = (GameMode*) realloc(list->modes, (newSize * sizeof(GameMode)));
+    GameMode* newAddr = realloc(list->modes, (newSize * sizeof(GameMode)));
 
     if (newAddr == NULL) {
         printf("ERROR: Unable to realloc memory for game modes array\n");
