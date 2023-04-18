@@ -6,7 +6,7 @@ Highly moddable free open source falling block puzzle game. Written in C using t
 
 The game is still in its early stages and is missing some features.
 
-<!--- For documentation, tutorials, info on contributing, etc visit [tuxmino.org](https://tuxmino.org).--->
+For documentation, tutorials, info on contributing, etc visit [tuxmino.org](https://tuxmino.org).
 
 ## Features
 - Lua support for making your own custom game modes.
