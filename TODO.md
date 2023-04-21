@@ -1,7 +1,6 @@
 # Todo
 
 ## General
-- Finish tutorial and documentation on the website
 
 ## Engine
 - TI bag generator
