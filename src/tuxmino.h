@@ -10,14 +10,14 @@
 #ifndef TUXMINO_H
 #define TUXMINO_H
 
-#include <raylib.h>
-#include <lua5.4/lua.h>
-#include <lua5.4/lualib.h>
-#include <lua5.4/lauxlib.h>
+#include "raylib.h"
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+#include "ini.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "ini.h"
 
 // Macros
 #define MIN(a, b) ((a)<(b)? (a) : (b))
