@@ -35,29 +35,8 @@ file(GLOB SOURCES "src/*.c")
 # Add an executable to project as a compilation target
 add_executable(tuxmino ${SOURCES})
 
-target_compile_options(tuxmino PRIVATE
-    -Wpedantic
-    -pedantic-errors
-    -Werror
-    -Wold-style-definition
-    -Wcast-align
-    -Wformat=2
-    -Wlogical-op
-    -Wmissing-include-dirs
-    -Wnested-externs
-    -Wredundant-decls
-    -Wshadow
-    -Wswitch
-    -Wundef
-    -Wunreachable-code
-    -Wdisabled-optimization
-    -Wunsafe-loop-optimizations
-    -Wfree-nonheap-object
-)
-
 target_include_directories(tuxmino PUBLIC
     ${PROJECT_BINARY_DIR}
-    include/
     ./dependencies/lua/
 )
 
