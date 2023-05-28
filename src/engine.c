@@ -104,7 +104,8 @@ static int rotationDir = 0; // 0 = left, 1 = right
 void currentPieceToMatrix(Piece* activePiece, PlayField playField, SpeedSettings timings);
 
 
-bool canDrawPiece(void) {
+bool canDrawPiece(void)
+{
     if (GetElapsed(flashTimer) != 0) {
         return true;
     }
@@ -112,7 +113,8 @@ bool canDrawPiece(void) {
 }
 
 
-bool canDrawFlash(void) {
+bool canDrawFlash(void)
+{
     return !TimerDone(flashTimer);
 }
 
@@ -121,9 +123,11 @@ bool canDrawFlash(void) {
  * Adds a new piece into the first slot of the bag and then moves all other
  * pieces over.
  */
-void shiftBag(int newPiece) {
-    // create a new array that has the same values as recentPieces, but moved
-    // over by 1 index.
+void shiftBag(int newPiece)
+{
+    /* create a new array that has the same values as recentPieces, but moved
+     * over by 1 index.
+     */
     int newBag[4];
     for (unsigned int i = 0; i < 3; i++) {
         newBag[i+1] = recentPieces[i];
@@ -139,14 +143,14 @@ void shiftBag(int newPiece) {
 /*
  * Loops through the bag to see if a certain piece is in it or not.
  */
-bool bagContains(int piece) {
-    bool hasPiece = false;
+bool bagContains(int piece)
+{
     for (unsigned int i = 0; i < 4; i++) {
         if (recentPieces[i] == piece) {
-            hasPiece = true;
+            return true;
         }
     }
-    return hasPiece;
+    return false;
 }
 
 
@@ -156,39 +160,29 @@ bool bagContains(int piece) {
  * For more details on how this algorithm works see:
  * https://harddrop.com/wiki/Ars#Wall_kicks
  */
-bool centerColumnCheck(Piece* activePiece, PlayField playField) {
-    bool valid = false;
-
-    // only the L, J, and T pieces have the center column check
+bool centerColumnCheck(Piece* activePiece, PlayField playField)
+{
+    /* only the L, J, and T pieces have the center column check */
     if ((activePiece->rotIndex == 0 || activePiece->rotIndex == 2) &&
-        (activePiece->pieceIndex == 1 || // T piece
-         activePiece->pieceIndex == 2 || // L piece
-         activePiece->pieceIndex == 3))  // J piece
+        (activePiece->pieceIndex == 1 || /* T piece */
+         activePiece->pieceIndex == 2 || /* L piece */
+         activePiece->pieceIndex == 3))  /* J piece */
     {
         for (unsigned int y = 0; y < 3; y++) {
             for (unsigned int x = 0; x < 3; x++) {
                 int posX = x + activePiece->position.x;
                 int posY = y + activePiece->position.y;
                 if (x != 1 && playField.matrix[posY][posX].type != 0) {
-                    valid = true;
-                    goto exitCenterColumnCheck;
+                    return true;
                 }
                 else if (x == 1 && playField.matrix[posY][posX].type != 0) {
-                    valid = false;
-                    goto exitCenterColumnCheck;
-                }
-                else {
-                    valid = true;
+                    return false;
                 }
             }
         }
     }
-    else {
-        valid = true;
-    }
 
-    exitCenterColumnCheck:
-    return valid;
+    return true;
 }
 
 
@@ -197,9 +191,8 @@ bool centerColumnCheck(Piece* activePiece, PlayField playField) {
  * Invalid positions mean the piece is outside the playfield or is inside
  * another block.
  */
-bool isValidRotation(int piece[4][4], Piece activePiece, PlayField playField) {
-    bool valid = false;
-
+bool isValidRotation(int piece[4][4], Piece activePiece, PlayField playField)
+{
     for (unsigned int y = 0; y < 4; y++) {
         for (unsigned int x = 0; x < 4; x++) {
             if (piece[y][x] != 0) {
@@ -208,21 +201,15 @@ bool isValidRotation(int piece[4][4], Piece activePiece, PlayField playField) {
                 if (xPos + x > playField.width - 1 ||
                     yPos + y > playField.height - 1)
                 {
-                    valid = false;
-                    goto exitRotationLoop;
+                    return false;
                 }
-                if (playField.matrix[y+yPos][x+xPos].type == 0) {
-                    valid = true;
-                }
-                else {
-                    valid = false;
-                    goto exitRotationLoop;
+                if (playField.matrix[y+yPos][x+xPos].type != 0) {
+                    return false;
                 }
             }
         }
     }
-    exitRotationLoop:
-    return valid;
+    return true;
 }
 
 
@@ -254,7 +241,8 @@ int getRandomPiece(SpeedSettings rule)
 /*
  * Update the displayed next pieces.
  */
-void updatePreview(SpeedSettings rule) {
+void updatePreview(SpeedSettings rule)
+{
     int newArr[3];
     for (unsigned int i = 3; i > 0; i--) {
         newArr[i-1] = upcomingPieces[i];
@@ -271,8 +259,8 @@ void updatePreview(SpeedSettings rule) {
 /*
  * This function checks to see if the current piece is inside of another block.
  */
-void checkIfGameOver(Piece* activePiece, PlayField playField) {
-    bool gameOver = false;
+void checkIfGameOver(Piece* activePiece, PlayField playField)
+{
     int piece = activePiece->pieceIndex;
     int rotation = activePiece->rotIndex;
 
@@ -284,14 +272,9 @@ void checkIfGameOver(Piece* activePiece, PlayField playField) {
             if (pieces[piece][rotation][y][x] != 0 &&
                 playField.matrix[yPos][xPos].type != 0)
             {
-                gameOver = true;
+                declareGameOver();
             }
         }
-    }
-
-    //TODO remove declareGameOver, main() functions should not be called
-    if (gameOver == true) {
-        declareGameOver();
     }
 }
 
@@ -300,8 +283,9 @@ void checkIfGameOver(Piece* activePiece, PlayField playField) {
  * Queues a piece for spawning. This is used for things such as appearance
  * delay so that the piece does not appear immediately.
  */
-void queuePiece(Piece* activePiece, PlayField playField) {
-    // center the piece
+void queuePiece(Piece* activePiece, PlayField playField)
+{
+    /* center the piece */
     activePiece->position.x = (int)(playField.width / 2) - 2;
     activePiece->position.y = 1.0f;
 
@@ -314,7 +298,8 @@ void queuePiece(Piece* activePiece, PlayField playField) {
 /*
  * Swaps the current piece with the held piece.
  */
-void holdSwap(Piece* activePiece, SpeedSettings rule, PlayField playField) {
+void holdSwap(Piece* activePiece, SpeedSettings rule, PlayField playField)
+{
     if (!canHold || !rule.holdEnabled) {
         return;
     }
@@ -366,7 +351,7 @@ void spawnQueuedPiece(Piece* activePiece, PlayField playField, SpeedSettings tim
     queuedPiece = -1;
     updatePreview(timings);
 
-    // pre hold
+    /* pre hold */
     if (IsKeyDown(config.keyBinds.swapHold)) {
         holdSwap(activePiece, timings, playField);
     }
@@ -375,7 +360,7 @@ void spawnQueuedPiece(Piece* activePiece, PlayField playField, SpeedSettings tim
     activePiece->position.y = 1.0f;
 
     int idx = activePiece->pieceIndex;
-    // Pre rotation
+    /* Pre rotation */
     if ((IsKeyDown(config.keyBinds.ccw) ||
          IsKeyDown(config.keyBinds.ccwAlt)) &&
          isValidRotation(pieces[idx][3], *activePiece, playField))
@@ -598,8 +583,6 @@ void resetLockDelay(SpeedSettings timings)
  */
 bool canMove(Vector2 position, Piece* activePiece, PlayField playField, int dirX, int dirY)
 {
-    bool move = false;
-
     for (unsigned int y = 0; y < 4; y++) {
         for (unsigned int x = 0; x < 4; x++) {
             if (pieces[activePiece->pieceIndex][activePiece->rotIndex][y][x] == 0) {
@@ -610,25 +593,19 @@ bool canMove(Vector2 position, Piece* activePiece, PlayField playField, int dirX
             unsigned int yPos = y + position.y + dirY;
 
             if (xPos >= playField.width || yPos >= playField.height) {
-                move = false;
-                return move;
+                return false;
             }
 
             int dirBlock = playField.matrix[yPos][xPos].type;
 
-            if (dirBlock == 0) {
-                move = true;
-            }
-            else if (dirBlock != 0 &&
-                     pieces[activePiece->pieceIndex][activePiece->rotIndex][y][x] != 0)
+            if (dirBlock != 0 && pieces[activePiece->pieceIndex][activePiece->rotIndex][y][x] != 0)
             {
-                move = false;
-                return move;
+                return false;
             }
         }
     }
 
-    return move;
+    return true;
 }
 
 
@@ -638,8 +615,6 @@ bool canMove(Vector2 position, Piece* activePiece, PlayField playField, int dirX
  */
 bool isTouchingStack(Piece* activePiece, PlayField playField)
 {
-    bool touchingStack = false;
-
     for (unsigned int y = 0; y < 4; y++) {
         for (unsigned int x = 0; x < 4; x++) {
             unsigned int xPos = activePiece->position.x + x;
@@ -653,13 +628,12 @@ bool isTouchingStack(Piece* activePiece, PlayField playField)
                 xPos + 1 > playField.height - 3 ||
                 playField.matrix[yPos][xPos + 1].type != 0)
             {
-                touchingStack = true;
-                return touchingStack;
+                return true;
             }
         }
     }
 
-    return touchingStack;
+    return false;
 }
 
 
@@ -669,8 +643,6 @@ bool isTouchingStack(Piece* activePiece, PlayField playField)
  */
 bool isTouchingFloor(Piece* activePiece, PlayField playField)
 {
-    bool touchingFloor = false;
-
     for (unsigned int y = 0; y < 4; y++) {
         for (unsigned int x = 0; x < 4; x++) {
             if (pieces[activePiece->pieceIndex][activePiece->rotIndex][y][x] == 0) {
@@ -681,13 +653,12 @@ bool isTouchingFloor(Piece* activePiece, PlayField playField)
             unsigned int yPos = activePiece->position.y + y;
 
             if (yPos + 1 >= playField.height - 1 || playField.matrix[yPos + 1][xPos].type != 0) {
-                touchingFloor = true;
-                return touchingFloor;
+                return true;
             }
         }
     }
 
-    return touchingFloor;
+    return false;
 }
 
 
@@ -695,7 +666,7 @@ void performWallKick(Piece* activePiece, SpeedSettings rule, PlayField playField
 {
     int currentRot = activePiece->rotIndex;
 
-    // classic rule kicks (ars)
+    /* classic rule kicks (ars) */
     if (rotationRule == CLASSIC) {
         if (activePiece->pieceIndex != 0) {
             for (int i = 0; i < 2; i++) {
@@ -1085,7 +1056,7 @@ void processInput(Piece* activePiece, PlayField playField, SpeedSettings* timing
     else if (IsKeyPressed(config.keyBinds.sonicDrop) && timings->sonicDropEnabled) {
         activePiece->position = getFinalPos(activePiece, playField);
 
-        // hard drop
+        /* hard drop */
         if (rotationRule == WORLD)
             pieceLockDelayTimer.startTime = timings->lockDelay;
     }
