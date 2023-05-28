@@ -40,10 +40,6 @@ target_include_directories(tuxmino PUBLIC
     ./dependencies/lua/
 )
 
-target_link_directories(tuxmino PUBLIC
-    lib/
-)
-
 # Compile raylib if needed. Basically, just call the CMakeLists.txt file that raylib comes with,
 # but output the files one directory higher (in tuxmino/dependencies/raylib/). Pretty sure CMake
 # actually moves everything to tuxmino/build/ which is even cleaner. CMake also seems to handle
