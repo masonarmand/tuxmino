@@ -24,35 +24,5 @@ View the [todo list](TODO.md).
 Please make sure the required dependencies are met:
 - [raylib dependencies linux](https://github.com/raysan5/raylib/wiki/Working-on-GNU-Linux)
 
-### Compiling on Windows using CMake
-```
-mkdir build
-cd build
-cmake .. -G "MinGW Makefiles"
-cmake --build .
-```
-
-After compiling make sure your compiled executable is in the same folder as the `res` folder.
-
-<br>
-
-### Compiling on Linux using CMake
-```
-git clone https://github.com/Scarbyte/tuxmino.git
-cd tuxmino
-mkdir build
-cd build
-cmake ..
-cmake --build .
-```
-
-Then make sure your compiled binary is in the same folder as the `res` folder.
-
-<br>
-
-### Using the makefile
-If lua5.4 and raylib are installed/compiled as shared libraries, you can use the makefile to quickly
-compile the game for development purposes. The makefile enables a lot of compiler warnings and also
-automatically launches the game in gdb for debugging. If you do not wish to launch the game in gdb
-you can edit the makefile and change `tuxmino debug clean` to `tuxmino run clean`. To compile the
-game using the makefile, simply run the command `make` in the project directory.
+Then simply either run `./build.sh` or `build.bat` depending on what OS you are on.
+The executable and all required files will be output to the `build/bin/` folder.
