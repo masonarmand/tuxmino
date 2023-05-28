@@ -1,7 +1,7 @@
 # Ignore stuff that doesn't need to be pushed to GitHub
-build/*
-gamemodes/*
-screenshots/*
-makefile
-gdbinit
-config.ini
+/build/*
+/gamemodes/*
+/screenshots/*
+/include/*
+/gdbinit
+/config.ini

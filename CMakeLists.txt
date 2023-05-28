@@ -26,19 +26,33 @@ project(TUXMINO VERSION 0.1)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
+# Set the executable output path
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+
+# Get all .c files in the src directory
+file(GLOB SOURCES "src/*.c")
+
 # Add an executable to project as a compilation target
-add_executable(tuxmino
-    src/config.c
-    src/draw.c
-    src/gamemodes.c
-    src/replay.c
-    src/timings.c
-    src/credits.c
-    src/engine.c
-    src/main.c
-    src/piece.c
-    src/timer.c
-    src/ini.c
+add_executable(tuxmino ${SOURCES})
+
+target_compile_options(tuxmino PRIVATE
+    -Wpedantic
+    -pedantic-errors
+    -Werror
+    -Wold-style-definition
+    -Wcast-align
+    -Wformat=2
+    -Wlogical-op
+    -Wmissing-include-dirs
+    -Wnested-externs
+    -Wredundant-decls
+    -Wshadow
+    -Wswitch
+    -Wundef
+    -Wunreachable-code
+    -Wdisabled-optimization
+    -Wunsafe-loop-optimizations
+    -Wfree-nonheap-object
 )
 
 target_include_directories(tuxmino PUBLIC
@@ -55,7 +69,7 @@ target_link_directories(tuxmino PUBLIC
 # but output the files one directory higher (in tuxmino/dependencies/raylib/). Pretty sure CMake
 # actually moves everything to tuxmino/build/ which is even cleaner. CMake also seems to handle
 # target_link_libraries(raylib) directly.
-add_subdirectory(./dependencies/raylib/raylib-4.2.0/ ./dependencies/raylib)
+add_subdirectory(./dependencies/raylib)
 add_subdirectory(./dependencies/lua)
 target_link_libraries(tuxmino PRIVATE
     raylib
@@ -72,6 +86,11 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     target_link_libraries(tuxmino PRIVATE
         opengl32
         gdi32
-        winmm
-    )
+)
 endif()
+
+# Copy resource files to the output directory
+file(COPY res/ DESTINATION ${EXECUTABLE_OUTPUT_PATH}/res)
+file(COPY gamemodes/ DESTINATION ${EXECUTABLE_OUTPUT_PATH}/gamemodes)
+file(COPY config.ini DESTINATION ${EXECUTABLE_OUTPUT_PATH})
+file(COPY screenshots/ DESTINATION ${EXECUTABLE_OUTPUT_PATH}/screenshots)
