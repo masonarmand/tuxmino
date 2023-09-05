@@ -18,15 +18,15 @@ RenderTexture2D renderCreditsTexture(PlayField playField) {
 
     const char* creditsList[CREDITS_LENGTH][2] = {
         {"Lead Programmer", "g"},
-        {"scarbyte", "w"},
+        {"Mason Armand", "w"},
         {"Github Contributors", "g"},
-        {"scarbyte", "w"},
+        {"Mason Armand", "w"},
         {"Dawnvoid", "w"},
         {"Art Made By", "g"},
         {"errormine", "w"},
-        {"scarbyte", "w"},
+        {"Mason Armand", "w"},
         {"Creators Website", "g"},
-        {"scarbyte.com", "w"},
+        {"masonarmand.com", "w"},
         {"tuxmino.org", "w"},
 
     };
