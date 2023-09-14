@@ -33,6 +33,7 @@ enum rotationSystems {CLASSIC, WORLD};
 // defined structs
 // -----------------------------------------------------------------------------
 
+
 // config structs
 typedef struct {
     unsigned int displayWidth;
@@ -60,10 +61,13 @@ typedef struct {
     KeyBinds keyBinds;
 } Config;
 
-
+typedef struct {
+        char* str;
+        Color color;
+} CreditEntry;
 
 typedef struct {
-    char** str;
+    CreditEntry* credits;
     int size;
 } CreditsList;
 

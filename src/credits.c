@@ -16,18 +16,18 @@ RenderTexture2D renderCreditsTexture(PlayField playField) {
     float spacing = 50;
     float height = (startPosY * 2) + (CREDITS_LENGTH * spacing);
 
-    const char* creditsList[CREDITS_LENGTH][2] = {
-        {"Lead Programmer", "g"},
-        {"Mason Armand", "w"},
-        {"Github Contributors", "g"},
-        {"Mason Armand", "w"},
-        {"Dawnvoid", "w"},
-        {"Art Made By", "g"},
-        {"errormine", "w"},
-        {"Mason Armand", "w"},
-        {"Creators Website", "g"},
-        {"masonarmand.com", "w"},
-        {"tuxmino.org", "w"},
+    const CreditEntry creditsList[CREDITS_LENGTH] = {
+        { "Lead Programmer", GREEN },
+        { "Mason Armand", WHITE },
+        { "Github Contributors", GREEN },
+        { "Mason Armand", WHITE },
+        { "Dawnvoid", WHITE },
+        { "Art Made By", GREEN },
+        { "errormine", WHITE },
+        { "Mason Armand", WHITE },
+        { "Creators Website", GREEN },
+        { "masonarmand.com", WHITE },
+        { "tuxmino.org", GREEN },
 
     };
 
@@ -38,10 +38,7 @@ RenderTexture2D renderCreditsTexture(PlayField playField) {
 
     BeginTextureMode(tex);
     for (int i = CREDITS_LENGTH - 1; i >= 0; i--) {
-        Color color = WHITE;
-        if (strcmp(creditsList[i][1], "g") == 0)
-            color = GREEN;
-        DrawCenteredText(creditsList[i][0], playField.width * playField.cellSize, 0, startPosY + (spacing * i), color);
+        DrawCenteredText(creditsList[i].str, playField.width * playField.cellSize, 0, startPosY + (spacing * i), creditsList[i].color);
     }
     DrawTexture(endTexture, 0, tex.texture.height - 640, WHITE);
     EndTextureMode();
